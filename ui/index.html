@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="img/logo512.png">
+
+    <title>HU4OCU</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/dashboard.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <script src="js/app.js"></script>
+    <style>
+      .label-as-badge {
+        border-radius: 1em;
+      }
+      .top-10 { padding-top: 10px; }
+      .top-20 { padding-top: 20px; }
+      .top-30 { padding-top: 30px; }
+    </style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a href="#"><img src="img/logo.png" style="margin-top:10px; height:40px;"/></a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#"><i class="fa fa-bar-chart"></i> Polls</a></li>
+            <li class="disabled"><a href="#"><i class="fa fa-random"></i> Wheel</a></li>
+            <li class="disabled"><a href="#"><i class="fa fa-random"></i> Quiz</a></li>
+            <li class="disabled"><a href="#"><i class="fa fa-random"></i> Chat</a></li>
+            <li class="disabled"><a href="#"><i class="fa fa-random"></i> Alerts</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <div class="row top-30">
+            <div class="col-md-12 form-group">
+              <label for="v1">Путь к файлу с логами чата</label>
+              <input type="file" name="chatFile"/>
+            </div>
+          </div>
+          <hr>
+          <div class="row top-30">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="v1">Вариант ответа</label>
+                <input type="text" class="form-control ng-pristine ng-valid ng-touched" id="v1" placeholder="Введите вариант..." ng-model="inputV1Text">
+              </div>
+              <div class="form-group">
+                <label for="k1">Ключ ответа</label>
+                <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="k1" placeholder="Введите ключ..." ng-model="inputV1Key">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="v2">Вариант ответа</label>
+                <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="v2" placeholder="Введите вариант..." ng-model="inputV2Text">
+              </div>
+              <div class="form-group">
+                <label for="k2">Ключ ответа</label>
+                <input type="text" class="form-control ng-pristine ng-untouched ng-valid" id="k2" placeholder="Введите ключ..." ng-model="inputV2Key">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  </body>
+</html>
+

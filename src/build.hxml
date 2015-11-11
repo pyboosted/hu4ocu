@@ -1,0 +1,33 @@
+#client
+
+-cp client
+-cp externs
+-main Client
+-js ../ui/js/app.js
+
+--next
+
+#server
+
+-cp server
+-cp externs
+-main Server
+-js ../bin/app.js
+
+--next
+
+#embedding html
+
+# -cp mocks
+# -cp externs
+# -main RutonyMock
+# -js ../bin/rutony-mock.js
+
+--next
+
+#mocks
+
+-cp mocks
+-cp externs
+-main RutonyMock
+-js ../bin/rutony-mock.js
