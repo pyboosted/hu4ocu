@@ -23,4 +23,5 @@ extern class Server {
       client.send(message);
     }
   }
+  public function on(event: String, fn:Dynamic->Void):Void;
 }

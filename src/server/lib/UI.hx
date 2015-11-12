@@ -8,10 +8,11 @@ import electron.CrashReporter;
 class UI {
 
   var window: BrowserWindow;
+  var renderer: Dynamic;
 
   public function new() {
 
-    CrashReporter.start();
+    // CrashReporter.start();
 
     App.on('window-all-closed', function () {
       App.quit();
@@ -26,7 +27,6 @@ class UI {
       });
     });
 
-
   }
 
   public function on(event: String, fn: Dynamic->Void):Void {
@@ -37,6 +37,10 @@ class UI {
 
   public function send(event: String, data: Dynamic):Void {
     IPC.send(event, data);
+  }
+
+  public function log(message: String) {
+    // if (renderer != null) renderer.send('log', message);
   }
 
 }

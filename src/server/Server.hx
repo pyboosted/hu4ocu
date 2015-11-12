@@ -24,7 +24,7 @@ class Server {
     
     var rutonyChat = new chats.RutonyChatProvider('ws://127.0.0.1:8383/Echo');
     rutonyChat.onStatusChanged(function (status) {
-      trace(status);
+      ui.log(cast status);
     });
     rutonyChat.connect();
 
@@ -35,18 +35,14 @@ class Server {
     
 
     ui = new UI();
-    staticServer = new StaticServer('../html', 8080);
+    staticServer = new StaticServer('file://' + untyped __js__('__dirname') + '/../html', 8080);
     socketServer = new SocketServer({ port: 8081 });
-    chats = new Chats();
+    chats = new Chats(this);
 
     ui.on('ready', function (_) {
-
-      chats.get(ChatProviders.Rutony).connect();
-
       var polls = new services.Polls(this);
-
-    });
-
+      chats.get(ChatProviders.Rutony).connect();
+    });  
 
   }
 

@@ -2,6 +2,8 @@ package services;
 
 import services.Service;
 
+using StringTools;
+
 @:enum abstract PollsStatus(String) {
   var NotRunning = 'not_running';
   var Running = 'running';
@@ -25,6 +27,8 @@ typedef PollsConfig = {
   votes2: Array<String>
 };
 
+
+
 class Polls extends Service {
 
   var config: PollsConfig;
@@ -43,19 +47,21 @@ class Polls extends Service {
     };
 
     app.chats.onMessage(function (message) {
-      trace(message);
       var username = '[${message.source}] ${message.username}';
+
+      trace('$username: ${message.text}');
+
 
       if (config.votes1.indexOf(username) != -1 || config.votes2.indexOf(username) != -1) {
         return;
       }
 
       var key = null;
-      if (message.text == config.key1) {
+      if (message.text.startsWith(config.key1)) {
         key = config.key1;
         config.votes1.push(username);
       }
-      if (message.text == config.key2) {
+      if (message.text.startsWith(config.key2)) {
         key = config.key2;
         config.votes2.push(username);
       }
@@ -69,6 +75,15 @@ class Polls extends Service {
         }));
         trace(config);
       }
+    });
+
+    app.socketServer.on('connection', function (client) {
+      client.send(haxe.Json.stringify({
+        action: 'init',
+        key: null,
+        username: null,
+        config: config
+      }));
     });
 
     app.ui.on('updatePolls', function (data) {

@@ -7,12 +7,12 @@ import chats.ChatProviders;
 class Chats {
   private var messageListeners: Array<Message->Void> = [];
   var chatProviders: Map<String, ChatProvider>;
-  public function new() {
+  public function new(app: Server) {
     chatProviders = new Map<String, ChatProvider>();
 
     var rutonyChatProvider = new RutonyChatProvider('http://127.0.0.1:8383/Echo');
     rutonyChatProvider.onStatusChanged(function (status) {
-      trace('Rutony: $status');
+      app.ui.log('Rutony: $status');
     });
     rutonyChatProvider.onMessage(notifyListeners);
 
