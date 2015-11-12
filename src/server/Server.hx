@@ -35,7 +35,11 @@ class Server {
     
 
     ui = new UI();
-    staticServer = new StaticServer('file://' + untyped __js__('__dirname') + '/../html', 8080);
+
+    var staticPath = 'file://' + untyped __js__('__dirname') + '/../html';
+    trace('Path: $staticPath');
+
+    staticServer = new StaticServer(staticPath, 8080);
     socketServer = new SocketServer({ port: 8081 });
     chats = new Chats(this);
 
