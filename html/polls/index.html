@@ -1,1 +1,20 @@
-Polls here :D
+<script>
+
+var socket = new WebSocket('ws://localhost:8081/votes');
+socket.onmessage = function (data) {
+  var message = JSON.parse(data.data);
+
+  document.getElementById('vote1').innerHTML = message.config.votes1.join('\n');
+  document.getElementById('vote2').innerHTML = message.config.votes2.join('\n');
+  document.getElementById('last').innerHTML = message.username + ' ' + message.key;
+};
+
+</script>
+
+<table style="width: 100%;">
+  <tr>
+    <td style="width:50%; border:1px solid black;"><pre id="vote1"></pre></td>
+    <td style="width:50%; border:1px solid black;"><pre id="vote2"></pre></td>
+  </tr>
+</table>
+<div>Last vote: <span id="last"></span></div>
