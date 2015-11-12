@@ -36,7 +36,10 @@ class Server {
 
     ui = new UI();
 
-    var staticPath = 'file://' + untyped __js__('__dirname') + '/../html';
+    var staticPath = '../html';
+    if (untyped process.platform == 'win32') {
+      staticPath = 'resources/app/html';
+    }
     trace('Path: $staticPath');
     trace('Dir name:', untyped __js__('__dirname'));
     trace('File name:', untyped __js__('__filename'));
