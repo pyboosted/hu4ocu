@@ -21,7 +21,7 @@ class UI {
     App.on('ready', function () {
       window = new BrowserWindow({ width: 1400, height: 700 });
       window.loadUrl('file://' + untyped __js__('__dirname') + '/../ui/index.html');
-      window.openDevTools();
+      // window.openDevTools();
       window.on('closed', function () {
         window = null;
       });
