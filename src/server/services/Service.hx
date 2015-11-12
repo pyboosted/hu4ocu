@@ -2,10 +2,9 @@ package services;
 
 class Service {
 
-  var ui: UI;
-  var socket: ws.Server;
+  var app: Server;
   public function new(app: Server) {
-    ui = app.getUI();
+    this.app = app;
   }
 
 }

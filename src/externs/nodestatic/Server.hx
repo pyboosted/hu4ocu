@@ -6,5 +6,5 @@ extern class Server {
     Server = Server['Server'];
   }
   public function new(path: String):Void;
-  public function serve(request:node.Http.Request, response: node.Http.Response):Void;
+  public function serve(request:node.Http.Request, response: node.Http.Response, ?cb: Dynamic->Dynamic->Void):Void;
 }

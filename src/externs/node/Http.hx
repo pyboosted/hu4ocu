@@ -3,6 +3,7 @@ package node;
 typedef Request = {
   public function addListener(eventName: String, handler:Void->Void):Request;
   public function resume():Request;
+  public var url: String;
 }
 typedef Response = Dynamic;
 

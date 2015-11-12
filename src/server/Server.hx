@@ -35,7 +35,7 @@ class Server {
     
 
     ui = new UI();
-    staticServer = new StaticServer('./html', 8080);
+    staticServer = new StaticServer('../html', 8080);
     socketServer = new SocketServer({ port: 8081 });
     chats = new Chats();
 

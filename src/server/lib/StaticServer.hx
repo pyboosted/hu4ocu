@@ -7,7 +7,16 @@ class StaticServer {
     var fileServer = new nodestatic.Server(path);
     var httpServer = node.Http.createServer(function (req, res) {
       req.addListener('end', function () {
-        fileServer.serve(req, res);
+        fileServer.serve(req, res, function (err, result) {
+          if (err != null) { // There was an error serving the file
+            trace('Error serving ${req.url} ${err.message}');
+
+            // Respond to the client
+            res.writeHead(err.status, err.headers);
+            res.end();
+          }
+
+        });
       }).resume();
     });
 
