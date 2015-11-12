@@ -1,7 +1,7 @@
 package services;
 
 import services.Service;
-
+import haxe.EnumTools;
 using StringTools;
 
 @:enum abstract PollsStatus(String) {
@@ -47,6 +47,9 @@ class Polls extends Service {
     };
 
     app.chats.onMessage(function (message) {
+
+      if (config.status != Running) return;
+
       var username = '[${message.source}] ${message.username}';
 
       trace('$username: ${message.text}');
@@ -86,10 +89,56 @@ class Polls extends Service {
       }));
     });
 
-    app.ui.on('updatePolls', function (data) {
+  
+  }
 
-    });
+  function broadcast(action: String) {
+    app.socketServer.broadcast(haxe.Json.stringify({
+      action: action,
+      key: null,
+      username: null,
+      config: config
+    }));
+  }
 
+  public function getConfig():PollsConfig {
+    return config;
+  }
+
+  public function setConfig(data: Dynamic) {
+    config.key1 = data.key1;
+    config.key2 = data.key2;
+    config.q1 = data.q1;
+    config.q2 = data.q2;
+
+    broadcast('update');
+  }
+
+  public function show():Void {
+    config.visual = Visible;
+    broadcast('show');
+  }
+
+  public function hide():Void {
+    config.visual = Hidden;
+    broadcast('hide');
+  }
+
+  public function start():Void {
+    config.status = Running;
+    broadcast('start');
+  }
+
+  public function stop():Void {
+    config.status = Stopped;
+    broadcast('stop');
+  }
+
+  public function reset():Void {
+    config.status = NotRunning;
+    config.votes1 = [];
+    config.votes2 = [];
+    broadcast('update');
   }
 
 }

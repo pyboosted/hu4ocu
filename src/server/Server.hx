@@ -12,49 +12,59 @@ import lib.UI;
 import chats.Chats;
 import chats.ChatProviders;
 
+import services.Polls;
+
 class Server {
 
   public var ui: UI;
   public var chats: Chats;
   public var staticServer: StaticServer;
   public var socketServer: SocketServer;
+  public var polls: Polls;
 
-  private function _connectChatProviders() {
-
-    
-    var rutonyChat = new chats.RutonyChatProvider('ws://127.0.0.1:8383/Echo');
-    rutonyChat.onStatusChanged(function (status) {
-      ui.log(cast status);
-    });
-    rutonyChat.connect();
-
-
-  }
   public function new(port: Int) {
-
-    
-
     ui = new UI();
 
-    var staticPath = '../html';
+    var staticPath = './html';
     if (untyped process.platform == 'win32') {
       staticPath = 'resources/app/html';
     }
-    trace('Path: $staticPath');
-    trace('Dir name:', untyped __js__('__dirname'));
-    trace('File name:', untyped __js__('__filename'));
-
+    
     staticServer = new StaticServer(staticPath, 8080);
     socketServer = new SocketServer({ port: 8081 });
     chats = new Chats(this);
-    chats.get(ChatProviders.Rutony).connect();
-    
+    chats.get(Rutony).connect();
+    polls = new Polls(this);
     
     ui.on('ready', function (_) {
       
+      ui.when('get', function (data) {
+        return polls.getConfig();
+      });
+
+      ui.when('start', function (_) {
+        polls.start();
+        return polls.getConfig();
+      });
+
+      ui.when('stop', function (_) {
+        polls.stop();
+        return polls.getConfig();
+      });
+
+      ui.when('reset', function (_) {
+        polls.reset();
+        return polls.getConfig();
+      });
+
+      ui.when('set', function (config) {
+        polls.setConfig(config);
+        return polls.getConfig();
+      });
+
     });
 
-    var polls = new services.Polls(this);  
+    
 
   }
 

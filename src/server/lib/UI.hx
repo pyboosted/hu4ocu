@@ -39,8 +39,16 @@ class UI {
     IPC.send(event, data);
   }
 
-  public function log(message: String) {
-    // if (renderer != null) renderer.send('log', message);
+  // server only
+  public function when(event: String, fn:Dynamic->Dynamic) {
+    IPC.on(event, function (event, args) {
+      event.returnValue = fn(args);
+    });
   }
+
+  // client only
+  public function call(event: String, data: Dynamic):Dynamic {
+    return IPC.sendSync(event, data);
+  };
 
 }

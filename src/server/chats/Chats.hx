@@ -11,9 +11,6 @@ class Chats {
     chatProviders = new Map<String, ChatProvider>();
 
     var rutonyChatProvider = new RutonyChatProvider('http://127.0.0.1:8383/Echo');
-    rutonyChatProvider.onStatusChanged(function (status) {
-      app.ui.log('Rutony: $status');
-    });
     rutonyChatProvider.onMessage(notifyListeners);
 
     chatProviders.set(cast ChatProviders.Rutony, rutonyChatProvider);
