@@ -14,10 +14,10 @@ import chats.ChatProviders;
 
 class Server {
 
-  var ui: UI;
-  var chats: Chats;
-  var staticServer: StaticServer;
-  var socketServer: SocketServer;
+  public var ui: UI;
+  public var chats: Chats;
+  public var staticServer: StaticServer;
+  public var socketServer: SocketServer;
 
   private function _connectChatProviders() {
 
@@ -40,8 +40,10 @@ class Server {
     chats = new Chats();
 
     ui.on('ready', function (_) {
-      trace('UI ready');
+
       chats.get(ChatProviders.Rutony).connect();
+
+      var polls = new services.Polls(this);
 
     });
 

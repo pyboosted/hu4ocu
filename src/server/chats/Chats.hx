@@ -5,7 +5,7 @@ import chats.RutonyChatProvider;
 import chats.ChatProviders;
 
 class Chats {
-
+  private var messageListeners: Array<Message->Void> = [];
   var chatProviders: Map<String, ChatProvider>;
   public function new() {
     chatProviders = new Map<String, ChatProvider>();
@@ -14,6 +14,7 @@ class Chats {
     rutonyChatProvider.onStatusChanged(function (status) {
       trace('Rutony: $status');
     });
+    rutonyChatProvider.onMessage(notifyListeners);
 
     chatProviders.set(cast ChatProviders.Rutony, rutonyChatProvider);
   }
@@ -22,5 +23,14 @@ class Chats {
     return chatProviders.get(cast provider);
   }
 
+  public function onMessage(fn: Message->Void) {
+    messageListeners.push(fn);
+  }
+
+  public function notifyListeners(message: Message) {
+    for (listener in messageListeners) {
+      listener(message);
+    }
+  }
 
 }
