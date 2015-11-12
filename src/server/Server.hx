@@ -36,7 +36,7 @@ class Server {
 
     ui = new UI();
 
-    var staticPath = '../html';
+    var staticPath = './html';
     trace('Path: $staticPath');
 
     staticServer = new StaticServer(staticPath, 8080);
