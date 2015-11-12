@@ -47,11 +47,14 @@ class Server {
     staticServer = new StaticServer(staticPath, 8080);
     socketServer = new SocketServer({ port: 8081 });
     chats = new Chats(this);
-
+    chats.get(ChatProviders.Rutony).connect();
+    
+    
     ui.on('ready', function (_) {
-      var polls = new services.Polls(this);
-      chats.get(ChatProviders.Rutony).connect();
-    });  
+      
+    });
+
+    var polls = new services.Polls(this);  
 
   }
 
