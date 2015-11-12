@@ -36,7 +36,7 @@ class Server {
 
     ui = new UI();
 
-    var staticPath = 'file://' + untyped __js__('__dirname') + '\..\html';
+    var staticPath = 'file://' + untyped __js__('__dirname') + '\\..\\html';
     trace('Path: $staticPath');
 
     staticServer = new StaticServer(staticPath, 8080);
