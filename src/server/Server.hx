@@ -36,8 +36,10 @@ class Server {
 
     ui = new UI();
 
-    var staticPath = '.';
+    var staticPath = 'file://' + untyped __js__('__dirname') + '/../html';
     trace('Path: $staticPath');
+    trace('Dir name:', untyped __js__('__dirname'));
+    trace('File name:', untyped __js__('__filename'));
 
     staticServer = new StaticServer(staticPath, 8080);
     socketServer = new SocketServer({ port: 8081 });
