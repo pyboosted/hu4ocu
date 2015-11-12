@@ -9,9 +9,13 @@ import ws.Server as SocketServer;
 import lib.StaticServer;
 import lib.UI;
 
+import chats.Chats;
+import chats.ChatProviders;
+
 class Server {
 
   var ui: UI;
+  var chats: Chats;
   var staticServer: StaticServer;
   var socketServer: SocketServer;
 
@@ -33,10 +37,11 @@ class Server {
     ui = new UI();
     staticServer = new StaticServer('./html', 8080);
     socketServer = new SocketServer({ port: 8081 });
+    chats = new Chats();
 
     ui.on('ready', function (_) {
-      
-
+      trace('UI ready');
+      chats.get(ChatProviders.Rutony).connect();
 
     });
 

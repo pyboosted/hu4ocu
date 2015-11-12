@@ -7,33 +7,34 @@ import chats.ChatProviderStatus;
 
 class RutonyChatProvider extends ChatProvider {
 
-  private var _socket: WebSocket;
-  private var _host: String;
+  var socket: WebSocket;
+  var host: String;
+
   public function new(host: String) {
-    _host = host;
+    this.host = host;
     super();
   }
 
   public override function connect() {
     setStatus(ChatProviderStatus.Pending);
     try {
-      _socket = new WebSocket('http://127.0.0.1:8383/Echo');
-      _socket.on('message', this._processMessage);
-      _socket.on('open', this._onConnect);
-      _socket.on('error', this._onDisconnect);
-      _socket.on('close', this._onDisconnect);
+      socket = new WebSocket(host);
+      socket.on('message', this.processMessage);
+      socket.on('open', this.onConnect);
+      socket.on('error', this.onDisconnect);
+      socket.on('close', this.onDisconnect);
     } catch (e:Dynamic) {
-      this._onDisconnect(e);
+      this.onDisconnect(e);
     }
   }
 
   public override function disconnect() {
-    _socket.close();
-    _socket = null;
+    socket.close();
+    socket = null;
     setStatus(ChatProviderStatus.Disconnected);
   } 
 
-  private function _processMessage(data: Dynamic):Void {
+  function processMessage(data: Dynamic):Void {
     var obj = haxe.Json.parse(data);
     var message:Message = {
       source: obj.site_str,
