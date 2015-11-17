@@ -1,188 +1,195 @@
-<script>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
 
-var socket = new WebSocket('ws://localhost:8081/votes');
-socket.onmessage = function (data) {
-  var message = JSON.parse(data.data);
+    var socket = new WebSocket('ws://localhost:8081/votes');
+    socket.onmessage = function (data) {
+      var message = JSON.parse(data.data);
 
-  var leftVotes = message.config.votes1.length;
-  var rightVotes = message.config.votes2.length;
+      var leftVotes = message.config.votes1.length;
+      var rightVotes = message.config.votes2.length;
 
-  var max = leftVotes + rightVotes;
-  if (!max) max = 1;
+      var max = leftVotes + rightVotes;
+      if (!max) max = 1;
 
-  console.log('Max', max);
-  console.log('Left', leftVotes);
-  console.log('Right', rightVotes);
+      console.log('Max', max);
+      console.log('Left', leftVotes);
+      console.log('Right', rightVotes);
 
-  
-  document.getElementById('redline').style.width = (leftVotes / max * 100) + '%';
-  document.getElementById('blueline').style.width = (rightVotes / max * 100) + '%';
+      
+      document.getElementById('redline').style.width = (leftVotes / max * 100) + '%';
+      document.getElementById('blueline').style.width = (rightVotes / max * 100) + '%';
 
-  // document.getElementById('last').innerHTML = message.username + ' ' + message.key;
+      // document.getElementById('last').innerHTML = message.username + ' ' + message.key;
 
-  var title = message.config.q1 + ' (' + message.config.key1 + ') - ' + message.config.q2 + ' (' + message.config.key2 + ')';
+      var title = message.config.q1 + ' (' + message.config.key1 + ') - ' + message.config.q2 + ' (' + message.config.key2 + ')';
 
-  if (message.config.status == 'running') {
-    document.getElementById('poll').classList.add('poll__active');
-    document.getElementById('poll').classList.remove('poll__unactive');
-  } else {
-    title = 'Голосование остановлено';
-    document.getElementById('poll').classList.remove('poll__active');
-    document.getElementById('poll').classList.add('poll__unactive');
-  }
-  document.getElementById('teams').innerHTML = title;
-};
+      if (message.config.status == 'running') {
+        document.getElementById('poll').classList.add('poll__active');
+        document.getElementById('poll').classList.remove('poll__unactive');
+      } else {
+        title = 'Голосование остановлено';
+        document.getElementById('poll').classList.remove('poll__active');
+        document.getElementById('poll').classList.add('poll__unactive');
+      }
+      document.getElementById('teams').innerHTML = title;
+    };
 
-</script>
-<style>
+    </script>
+    <style>
 
-@font-face {
-  font-family: WT; /* Имя шрифта */
-  src: url(../fonts/wt_font.ttf); /* Путь к файлу со шрифтом */
-}
+    @font-face {
+      font-family: WT; /* Имя шрифта */
+      src: url(../fonts/wt_font.ttf); /* Путь к файлу со шрифтом */
+    }
 
-html, body {
-  padding: 0px; margin: 0px;
-  font-family: WT;
-}
+    html, body {
+      padding: 0px; margin: 0px;
+      font-family: WT;
+    }
 
-.poll {
-  width: 100%; height: 70px;
-}
+    .poll {
+      width: 100%; height: 70px;
+    }
 
-.poll_line {
-  margin-top: 4px; width: 100%;
-  height: 18px;
-}
+    .poll_line {
+      margin-top: 4px; width: 100%;
+      height: 18px;
+    }
 
-.poll_line__left {
-  background: url(img/teamsline_left.png) no-repeat;
-  background-position: left top;
-  padding-left: 2px;
-  height: 18px;
-}
-.poll_line__right {
-  background: url(img/teamsline_right.png) no-repeat;
-  background-position: right top;
-  padding-right: 2px;
-  height: 18px;
-}
-.poll_line__main {
-  background: url(img/teamsline_bg.png) repeat-x;
-  height: 18px;
-}
+    .poll_line__left {
+      background: url(img/teamsline_left.png) no-repeat;
+      background-position: left top;
+      padding-left: 2px;
+      height: 18px;
+    }
+    .poll_line__right {
+      background: url(img/teamsline_right.png) no-repeat;
+      background-position: right top;
+      padding-right: 2px;
+      height: 18px;
+    }
+    .poll_line__main {
+      background: url(img/teamsline_bg.png) repeat-x;
+      height: 18px;
+    }
 
-.teams_line {
-  position: absolute;
-  width: 460px; margin-top: -22px;
-  left: 50%;
-  margin-left: -230px;
-}
-.teams_line__left {
-  background: url(img/teamsline_left.png) no-repeat;
-  background-position: left top;
-  padding-left: 2px;
-  height: 35px;
-}
-.teams_line__right {
-  background: url(img/teamsline_right.png) no-repeat;
-  background-position: right top;
-  padding-right: 2px;
-  height: 35px;
-}
-.teams_line__main {
-  background: url(img/teamsline_bg.png) repeat-x;
-  height: 35px;
-  text-align: center;
-  line-height: 35px;
-  color: white;
-  font-weight: 20px;
-}
+    .teams_line {
+      position: absolute;
+      width: 460px; margin-top: -22px;
+      left: 50%;
+      margin-left: -230px;
+    }
+    .teams_line__left {
+      background: url(img/teamsline_left.png) no-repeat;
+      background-position: left top;
+      padding-left: 2px;
+      height: 35px;
+    }
+    .teams_line__right {
+      background: url(img/teamsline_right.png) no-repeat;
+      background-position: right top;
+      padding-right: 2px;
+      height: 35px;
+    }
+    .teams_line__main {
+      background: url(img/teamsline_bg.png) repeat-x;
+      height: 35px;
+      text-align: center;
+      line-height: 35px;
+      color: white;
+      font-weight: 20px;
+    }
 
-@-webkit-keyframes animatedBackground {
-    0% { background-position: 0 0; }
-    100% { background-position: -24px 0; }
-}
+    @-webkit-keyframes animatedBackground {
+        0% { background-position: 0 0; }
+        100% { background-position: -24px 0; }
+    }
 
-.line {
-  width: 0%;  
-  height: 12px;
-  background-repeat: repeat-x;
-  margin-top: 3px;
-  -webkit-transition: all 2s;
-}
+    .line {
+      width: 0%;  
+      height: 12px;
+      background-repeat: repeat-x;
+      margin-top: 3px;
+      -webkit-transition: all 2s;
+    }
 
-.poll__active .line {
-  -webkit-animation: animatedBackground 2s linear infinite;
-}
-.poll__unactive .line {
-  -webkit-filter: grayscale(100%);
-}
+    .poll__active .line {
+      -webkit-animation: animatedBackground 2s linear infinite;
+    }
+    .poll__unactive .line {
+      -webkit-filter: grayscale(100%);
+    }
 
-.linecontainer {
-  height: 18px;
-  display: table;
-  width: 100%;
-  padding: 0px; margin: 0px;
-}
+    .linecontainer {
+      height: 18px;
+      display: table;
+      width: 100%;
+      padding: 0px; margin: 0px;
+    }
 
-.linecontainer > div {
-  height: 18px;
-  display: table-cell;
-}
+    .linecontainer > div {
+      height: 18px;
+      display: table-cell;
+    }
 
-.linecontainer__left {
-  width: auto;
-  padding-left: 1px;
-}
-.linecontainer__center {
-  width: 460px;
-}
-.linecontainer__right {
-  width: auto;
-  padding-right: 1px;
-}
+    .linecontainer__left {
+      width: auto;
+      padding-left: 1px;
+    }
+    .linecontainer__center {
+      width: 460px;
+    }
+    .linecontainer__right {
+      width: auto;
+      padding-right: 1px;
+    }
 
-.line__red {
-  background-image: url(img/redline_bg.png);
-  width: 100%;
-  float: right;
-}
+    .line__red {
+      background-image: url(img/redline_bg.png);
+      width: 100%;
+      float: right;
+    }
 
-.line__blue {
-  float: left;
-  background-image: url(img/blueline_bg.png);
-  width: 100%;
-}
+    .line__blue {
+      float: left;
+      background-image: url(img/blueline_bg.png);
+      width: 100%;
+    }
 
-
-</style>
-
-<div style="padding: 0px;">
-  <div class="poll" id="poll">
-    <div class="poll_line">
-      <div class="poll_line__left">
-        <div class="poll_line__right">
-          <div class="poll_line__main">
-            <div class="linecontainer">
-              <div class="linecontainer__left">
-                <div class="line line__red" id="redline"></div>
-              </div>
-              <div class="linecontainer__center">&nbsp;</div>
-              <div class="linecontainer__right">
-                <div class="line line__blue" id="blueline"></div>
+    </style>
+  </head>
+  <body>
+  <div style="padding: 0px;">
+    <div class="poll" id="poll">
+      <div class="poll_line">
+        <div class="poll_line__left">
+          <div class="poll_line__right">
+            <div class="poll_line__main">
+              <div class="linecontainer">
+                <div class="linecontainer__left">
+                  <div class="line line__red" id="redline"></div>
+                </div>
+                <div class="linecontainer__center">&nbsp;</div>
+                <div class="linecontainer__right">
+                  <div class="line line__blue" id="blueline"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="teams_line">
-      <div class="teams_line__left">
-        <div class="teams_line__right">
-          <div class="teams_line__main" id="teams"></div>
+      <div class="teams_line">
+        <div class="teams_line__left">
+          <div class="teams_line__right">
+            <div class="teams_line__main" id="teams"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</body>
+</html>
