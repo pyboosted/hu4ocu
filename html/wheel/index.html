@@ -1,1 +1,182 @@
-wheel
+<body>
+  <head>
+    <style>
+
+    @font-face {
+      font-family: WT; /* Имя шрифта */
+      src: url(../fonts/wt_font.ttf); /* Путь к файлу со шрифтом */
+    }
+
+    html, body {
+      padding: 0px;
+      margin: 0px;
+      font-family: WT;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    ul.userlist, li.user {
+      padding: 0px; margin:0px;
+      list-style-type: none;
+    }
+
+    .userlist {
+      margin-left: auto !important; 
+      margin-right: auto !important;
+      width: 547px;
+
+      /*transition: transform 0.2s linear;*/
+    }
+
+    li.user {
+      opacity: 0;
+    }
+    li.user:nth-child(1) {
+      opacity: 0.1;
+    }
+    li.user:nth-child(2) {
+      opacity: 0.3;
+    }
+    li.user:nth-child(3) {
+      opacity: 0.5;
+    }
+    li.user:nth-child(4) {
+      opacity: 0.7;
+    }
+    li.user:nth-child(5) {
+      opacity: 0.9;
+    }
+
+    li.user:nth-child(6) {
+      opacity: 1;
+      background: url(img/username_selected.png) no-repeat;
+    }
+
+    li.user:nth-child(7) {
+      opacity: 0.9;
+    }
+    li.user:nth-child(8) {
+      opacity: 0.8;
+    }
+    li.user:nth-child(9) {
+      opacity: 0.7;
+    }
+    li.user:nth-child(10) {
+      opacity: 0.6;
+    }
+    li.user:nth-child(11) {
+      opacity: 0.5;
+    }
+    li.user:nth-child(12) {
+      opacity: 0.4;
+    }
+    li.user:nth-child(13) {
+      opacity: 0.3;
+    }
+    li.user:nth-child(14) {
+      opacity: 0.2;
+    }
+    li.user:nth-child(15) {
+      opacity: 0.1;
+    }
+
+    .user {
+      width: 547px;
+      height: 71px;
+      background: url(img/username.png) no-repeat;
+      text-align: center;
+      line-height: 71px;
+      font-size: 30px;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+    }
+
+    .user__selected {
+      background: url(img/username_selected.png) no-repeat;
+    }
+
+    </style>
+
+    <script>
+      (function() {
+        var requestAnimationFrame = window.requestAnimationFrame || 
+          window.mozRequestAnimationFrame ||
+          window.webkitRequestAnimationFrame || 
+          window.msRequestAnimationFrame;
+        window.requestAnimationFrame = requestAnimationFrame;
+
+      })();  
+
+      document.addEventListener('DOMContentLoaded', function () {
+
+        var start = 0;
+        var last = 0;
+        var list = document.getElementById('userlist');
+        var nth = 0;
+
+        var stepSize = 150;
+        var ceilHeight = 71;
+
+        var prev = null;
+
+        function step(timestamp) {
+
+          var progress = timestamp - start;
+
+          var currentStep = Math.ceil(progress / stepSize);
+          var offset = (progress % stepSize) / stepSize * ceilHeight;
+
+          
+
+          if (currentStep != last) {
+            
+            last = currentStep;
+
+            // if (prev !== null) {
+            //   prev.classList.remove('user__selected');
+            // }
+
+            // prev = list.children[6];
+            // prev.classList.add('user__selected');
+
+            list.appendChild(list.children[0]);
+          }
+
+          list.style.webkitTransform = 'translate(0, ' + -offset + 'px)';  
+          
+          requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+
+      });
+
+      
+
+      
+
+    </script>
+  </head>
+  <body>
+    <ul class="userlist" id="userlist">
+      <li class="user">Nagibator_1</li>
+      <li class="user">Nagibator_2</li>
+      <li class="user">Nagibator_3</li>
+      <li class="user">Nagibator_4</li>
+      <li class="user">Nagibator_5</li>
+      <li class="user">Nagibator_6</li>
+      <li class="user">Nagibator_7</li>
+      <li class="user">Nagibator_8</li>
+      <li class="user">Nagibator_9</li>
+      <li class="user">Nagibator_10</li>
+      <li class="user">Nagibator_11</li>
+      <li class="user">Nagibator_12</li>
+      <li class="user">Nagibator_13</li>
+      <li class="user">Nagibator_14</li>
+      <li class="user">Nagibator_15</li>
+      <li class="user">Nagibator_16</li>
+      <li class="user">Nagibator_17</li>
+      <li class="user">Nagibator_18</li>
+      <li class="user">Nagibator_19</li>
+    </ul>
+  </body>
+</body>

@@ -146,34 +146,34 @@ class Polls extends Service {
     config.q1 = data.q1;
     config.q2 = data.q2;
 
-    broadcast('update');
+    broadcast('polls.update');
   }
 
   public function show():Void {
     config.visual = Visible;
-    broadcast('show');
+    broadcast('polls.show');
   }
 
   public function hide():Void {
     config.visual = Hidden;
-    broadcast('hide');
+    broadcast('polls.hide');
   }
 
   public function start():Void {
     config.status = Running;
-    broadcast('start');
+    broadcast('polls.start');
   }
 
   public function stop():Void {
     config.status = Stopped;
-    broadcast('stop');
+    broadcast('polls.stop');
   }
 
   public function reset():Void {
     config.status = NotRunning;
     config.votes1 = [];
     config.votes2 = [];
-    broadcast('update');
+    broadcast('polls.update');
   }
 
 }

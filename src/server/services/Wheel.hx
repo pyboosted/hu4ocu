@@ -1,5 +1,7 @@
 package services;
 
+using StringTools;
+
 @:enum abstract WheelStatus(String) {
   var NotRunning = 'not_running';
   var Running = 'running';
@@ -41,6 +43,13 @@ class Wheel extends Service {
     return array;
   }
 
+  function broadcast(action: String) {
+    app.socketServer.broadcast(haxe.Json.stringify({
+      action: action,
+      config: config
+    }));
+  }
+
   public function new(app) {
     super(app);
 
@@ -53,28 +62,42 @@ class Wheel extends Service {
 
     app.chats.onMessage(function (message) {
 
+      if (config.keyword != null) {
+
+        var username = '[${message.source}] ${message.username}';
+        if (message.text.startsWith(config.keyword)) {
+          config.list.push(username);          
+        }
+
+        broadcast('wheel.update');
+      }
+
     });
 
     app.ui.when('wheel.keyword', function (keyword) {
       config.keyword = keyword;
+      broadcast('wheel.keyword');
       return config;
     });
 
     app.ui.when('wheel.update', function (list) {
       config.list = list;
+      config.winner = null;
+      broadcast('wheel.update');
       return config;
     });
 
     app.ui.when('wheel.shuffle', function (_) {
       config.list = shuffle(config.list);
+      config.winner = null;
+      broadcast('wheel.update');
       return config;
     });
 
     app.ui.when('wheel.roll', function (_) {
-
       var index = Math.floor(Math.random() * config.list.length);
       config.winner = config.list[index];
-
+      broadcast('wheel.winner');
       return config;
     });
   }
