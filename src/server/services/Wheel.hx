@@ -74,6 +74,10 @@ class Wheel extends Service {
 
     });
 
+    app.ui.when('wheel.get', function (keyword) {
+      return config;
+    });
+
     app.ui.when('wheel.keyword', function (keyword) {
       config.keyword = keyword;
       broadcast('wheel.keyword');

@@ -12,12 +12,8 @@ class WheelClient {
 
     doc = js.Browser.document;
     doc.addEventListener('DOMContentLoaded', function () {
-
       IPC.send('ready');
-
       config = IPC.sendSync('wheel.get');
-
-
     });
   }
 
