@@ -2,8 +2,15 @@
 
 -cp client
 -cp externs
--main Client
--js ../ui/js/app.js
+-main PollsClient
+-js ../ui/js/polls.js
+
+--next
+
+-cp client
+-cp externs
+-main WheelClient
+-js ../ui/js/wheel.js
 
 --next
 

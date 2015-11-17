@@ -46,6 +46,41 @@ class Polls extends Service {
       votes2: []
     };
 
+    app.ui.when('polls.get', function (data) {
+      return this.getConfig();
+    });
+
+    app.ui.when('polls.start', function (_) {
+      this.start();
+      return this.getConfig();
+    });
+
+    app.ui.when('polls.stop', function (_) {
+      this.stop();
+      return this.getConfig();
+    });
+
+    app.ui.when('polls.hide', function (_) {
+      this.hide();
+      return this.getConfig();
+    });
+
+    app.ui.when('polls.show', function (_) {
+      this.show();
+      return this.getConfig();
+    });
+
+    app.ui.when('polls.reset', function (_) {
+      this.reset();
+      return this.getConfig();
+    });
+
+    app.ui.when('polls.set', function (config) {
+      this.setConfig(config);
+      return this.getConfig();
+    });
+
+
     app.chats.onMessage(function (message) {
 
       if (config.status != Running) return;

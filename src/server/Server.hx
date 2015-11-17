@@ -13,6 +13,7 @@ import chats.Chats;
 import chats.ChatProviders;
 
 import services.Polls;
+import services.Wheel;
 
 class Server {
 
@@ -20,7 +21,9 @@ class Server {
   public var chats: Chats;
   public var staticServer: StaticServer;
   public var socketServer: SocketServer;
+
   public var polls: Polls;
+  public var wheel: Wheel;
 
   public function new(port: Int) {
     ui = new UI();
@@ -34,46 +37,9 @@ class Server {
     socketServer = new SocketServer({ port: 8081 });
     chats = new Chats(this);
     chats.get(Rutony).connect();
+
     polls = new Polls(this);
-    
-    ui.on('ready', function (_) {
-      
-      ui.when('get', function (data) {
-        return polls.getConfig();
-      });
-
-      ui.when('start', function (_) {
-        polls.start();
-        return polls.getConfig();
-      });
-
-      ui.when('stop', function (_) {
-        polls.stop();
-        return polls.getConfig();
-      });
-
-      ui.when('hide', function (_) {
-        polls.hide();
-        return polls.getConfig();
-      });
-
-      ui.when('show', function (_) {
-        polls.show();
-        return polls.getConfig();
-      });
-
-      ui.when('reset', function (_) {
-        polls.reset();
-        return polls.getConfig();
-      });
-
-      ui.when('set', function (config) {
-        polls.setConfig(config);
-        return polls.getConfig();
-      });
-
-    });
-
+    wheel = new Wheel(this);
     
 
   }

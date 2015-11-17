@@ -1,0 +1,82 @@
+package services;
+
+@:enum abstract WheelStatus(String) {
+  var NotRunning = 'not_running';
+  var Running = 'running';
+  var Stopped = 'stopped';
+}
+
+typedef WheelConfig = {
+  status: WheelStatus,
+  list: Array<String>,
+  keyword: String,
+  winner: String
+};
+
+
+class Wheel extends Service {
+
+  var config:Dynamic;
+
+  function shuffle<T>(array: Array<T>) {
+
+    var counter = array.length;
+    var temp: T;
+    var index: Int;
+
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+
+    return array;
+  }
+
+  public function new(app) {
+    super(app);
+
+    config = {
+      status: NotRunning,
+      list: [],
+      keyword: null,
+      winner: null
+    };
+
+    app.chats.onMessage(function (message) {
+
+    });
+
+    app.ui.when('wheel.keyword', function (keyword) {
+      config.keyword = keyword;
+      return config;
+    });
+
+    app.ui.when('wheel.update', function (list) {
+      config.list = list;
+      return config;
+    });
+
+    app.ui.when('wheel.shuffle', function (_) {
+      config.list = shuffle(config.list);
+      return config;
+    });
+
+    app.ui.when('wheel.roll', function (_) {
+
+      var index = Math.floor(Math.random() * config.list.length);
+      config.winner = config.list[index];
+
+      return config;
+    });
+  }
+
+}

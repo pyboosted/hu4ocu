@@ -2,7 +2,7 @@ package ;
 
 import electron.IPC;
 
-class Client {
+class PollsClient {
 
   var config = null;
 
@@ -26,8 +26,10 @@ class Client {
 
     doc = js.Browser.document;
     doc.addEventListener('DOMContentLoaded', function () {
+
       IPC.send('ready');
-      config = IPC.sendSync('get');
+      
+      config = IPC.sendSync('polls.get');
 
       q1Input = cast doc.getElementById('q1');
       q2Input = cast doc.getElementById('q2');
@@ -46,26 +48,26 @@ class Client {
       hideBtn = doc.getElementById('hide');
 
       startBtn.addEventListener('click', function (_) {
-        config = IPC.sendSync('start');
+        config = IPC.sendSync('polls.start');
         updateBtns();
       });
 
       stopBtn.addEventListener('click', function (_) {
-        config = IPC.sendSync('stop');
+        config = IPC.sendSync('polls.stop');
         updateBtns();
       });
 
       resetBtn.addEventListener('click', function (_) {
-        config = IPC.sendSync('reset');
+        config = IPC.sendSync('polls.reset');
         updateBtns();
       });
 
       showBtn.addEventListener('click', function (_) {
-        config = IPC.sendSync('show');
+        config = IPC.sendSync('polls.show');
         updateBtns();
       });
       hideBtn.addEventListener('click', function (_) {
-        config = IPC.sendSync('hide');
+        config = IPC.sendSync('polls.hide');
         updateBtns();
       });
 
@@ -76,7 +78,7 @@ class Client {
           key1: key1Input.value,
           key2: key2Input.value
         };
-        config = IPC.sendSync('set', cfg);
+        config = IPC.sendSync('polls.set', cfg);
         updateBtns();
       });
 
@@ -85,7 +87,7 @@ class Client {
       var timer = new haxe.Timer(1000);
       timer.run = function () {
 
-        config = IPC.sendSync('get');
+        config = IPC.sendSync('polls.get');
         updateLists();
 
       };
@@ -139,7 +141,7 @@ class Client {
 
 
   public static function main() {
-    var client = new Client();
+    var client = new PollsClient();
   }
 
 }
