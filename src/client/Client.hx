@@ -19,6 +19,8 @@ class Client {
   var saveBtn: js.html.DOMElement;
   var stopBtn: js.html.DOMElement;
   var resetBtn: js.html.DOMElement;
+  var showBtn: js.html.DOMElement;
+  var hideBtn: js.html.DOMElement;
 
   public function new() {
 
@@ -40,6 +42,9 @@ class Client {
       stopBtn = doc.getElementById('stop');
       resetBtn = doc.getElementById('reset');
 
+      showBtn = doc.getElementById('show');
+      hideBtn = doc.getElementById('hide');
+
       startBtn.addEventListener('click', function (_) {
         config = IPC.sendSync('start');
         updateBtns();
@@ -52,6 +57,15 @@ class Client {
 
       resetBtn.addEventListener('click', function (_) {
         config = IPC.sendSync('reset');
+        updateBtns();
+      });
+
+      showBtn.addEventListener('click', function (_) {
+        config = IPC.sendSync('show');
+        updateBtns();
+      });
+      hideBtn.addEventListener('click', function (_) {
+        config = IPC.sendSync('hide');
         updateBtns();
       });
 
@@ -97,6 +111,15 @@ class Client {
         startBtn.style.display = 'inline';
         resetBtn.style.display = 'inline';
         saveBtn.style.display = 'inline';
+    }
+
+    switch (config.visual) {
+      case 'hidden':
+        showBtn.style.display = 'inline';
+        hideBtn.style.display = 'none';
+      case 'visible':
+        hideBtn.style.display = 'inline';
+        showBtn.style.display = 'none';
     }
 
     q1Input.value = config.q1;

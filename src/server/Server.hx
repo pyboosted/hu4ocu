@@ -52,6 +52,16 @@ class Server {
         return polls.getConfig();
       });
 
+      ui.when('hide', function (_) {
+        polls.hide();
+        return polls.getConfig();
+      });
+
+      ui.when('show', function (_) {
+        polls.show();
+        return polls.getConfig();
+      });
+
       ui.when('reset', function (_) {
         polls.reset();
         return polls.getConfig();

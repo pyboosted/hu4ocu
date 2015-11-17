@@ -6,6 +6,18 @@
     <script>
 
     var socket = new WebSocket('ws://localhost:8081/votes');
+    var firstUpdate = true;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.self !== window.top) {
+        document.body.classList.add('iframe');
+        document.body.classList.remove('direct');
+      } else {
+        document.body.classList.add('direct');
+        document.body.classList.remove('iframe');
+      }
+    });
+
     socket.onmessage = function (data) {
       var message = JSON.parse(data.data);
 
@@ -15,25 +27,66 @@
       var max = leftVotes + rightVotes;
       if (!max) max = 1;
 
-      console.log('Max', max);
-      console.log('Left', leftVotes);
-      console.log('Right', rightVotes);
+      var key1 = message.config.key1;
+      var key2 = message.config.key2;
 
       
       document.getElementById('redline').style.width = (leftVotes / max * 100) + '%';
       document.getElementById('blueline').style.width = (rightVotes / max * 100) + '%';
 
-      // document.getElementById('last').innerHTML = message.username + ' ' + message.key;
-
       var title = message.config.q1 + ' (' + message.config.key1 + ') - ' + message.config.q2 + ' (' + message.config.key2 + ')';
 
+      if (message.config.visual == 'visible') {
+        document.getElementById('poll').classList.add('poll__visible');
+        document.getElementById('poll').classList.remove('poll__hidden');
+      } else {
+        document.getElementById('poll').classList.add('poll__hidden');
+        document.getElementById('poll').classList.remove('poll__visible');
+      }
+
+
       if (message.config.status == 'running') {
+
         document.getElementById('poll').classList.add('poll__active');
         document.getElementById('poll').classList.remove('poll__unactive');
+
+        var nameEl = null;
+        var votes = null;
+        if (message.key == key1) {
+          votes = leftVotes;
+          nameEl = document.getElementById('name1');
+        }
+
+        if (message.key == key2) {
+          votes = rightVotes;
+          nameEl = document.getElementById('name2');
+        }
+
+        if (nameEl) {
+          firstUpdate = false;
+          if (message.key == key1) {
+            nameEl.innerHTML = message.username + ' <span>' + votes + '</span>';  
+          } else {
+            nameEl.innerHTML = '<span>' + votes + '</span> ' + message.username;
+          }
+          
+        }
+
+        if (message.key === null && firstUpdate) {
+          document.getElementById('name1').innerHTML = message.config.q1 + ' <span>' + leftVotes + '</span>';
+          document.getElementById('name2').innerHTML = '<span>' + rightVotes + '</span> ' + message.config.q2;
+        }
+
       } else {
+        
         title = 'Голосование остановлено';
+
         document.getElementById('poll').classList.remove('poll__active');
         document.getElementById('poll').classList.add('poll__unactive');
+
+        document.getElementById('name1').innerHTML = message.config.q1  + ' <span>' + leftVotes + '</span>';
+        document.getElementById('name2').innerHTML = '<span>' + rightVotes + '</span> ' + message.config.q2;
+
       }
       document.getElementById('teams').innerHTML = title;
     };
@@ -53,6 +106,23 @@
 
     .poll {
       width: 100%; height: 70px;
+      -webkit-transition: all 1s;
+    }
+
+    .direct .poll__hidden {
+      transform: translate(0, -300px);
+    }
+
+    .direct .poll__visible {
+      transform: translate(0, 0px);
+    }
+
+    .iframe .poll__hidden {
+      opacity: 0.3;
+    }
+
+    .iframe .poll__visible {
+      opacity: 1;
     }
 
     .poll_line {
@@ -109,6 +179,11 @@
         100% { background-position: -24px 0; }
     }
 
+    @keyframes animatedBackground {
+        0% { background-position: 0 0; }
+        100% { background-position: -24px 0; }
+    }
+
     .line {
       width: 0%;  
       height: 12px;
@@ -119,6 +194,7 @@
 
     .poll__active .line {
       -webkit-animation: animatedBackground 2s linear infinite;
+      animation: animatedBackground 2s linear infinite;
     }
     .poll__unactive .line {
       -webkit-filter: grayscale(100%);
@@ -160,11 +236,44 @@
       width: 100%;
     }
 
+    .names {
+      margin-top: 10px;
+    }
+
+    .namescontainer {
+      width: 100%;
+      display: table;
+      padding: 0px; margin: 0px;
+    }
+
+    .namescontainer > div {
+      display: table-cell;
+      text-align: center;
+    }
+
+    .namescontainer__center {
+      width: 460px;
+    }
+    .name {
+      display: inline-block;
+      line-height: 51px;
+      height: 51px;
+      min-width: 247px;
+      background: url(img/nickname_bg.png) no-repeat;
+      text-align: center;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+      font-size: 18px;
+    }
+    .name span {
+      color: #f9ff85;
+      padding-left: 15px; padding-right:15px;
+    }
     </style>
   </head>
-  <body>
+  <body class="direct">
   <div style="padding: 0px;">
-    <div class="poll" id="poll">
+    <div class="poll poll__unactive poll__hidden" id="poll">
       <div class="poll_line">
         <div class="poll_line__left">
           <div class="poll_line__right">
@@ -185,7 +294,18 @@
       <div class="teams_line">
         <div class="teams_line__left">
           <div class="teams_line__right">
-            <div class="teams_line__main" id="teams"></div>
+            <div class="teams_line__main" id="teams">Голосование не запущено</div>
+          </div>
+        </div>
+      </div>
+      <div class="names">
+        <div class="namescontainer">
+          <div class="namescontainer__left">
+            <div id="name1" class="name">&nbsp;</div>
+          </div>
+          <div class="namescontainer__center">&nbsp;</div>
+          <div class="namescontainer__right">
+            <div id="name2" class="name">&nbsp;</div>
           </div>
         </div>
       </div>
