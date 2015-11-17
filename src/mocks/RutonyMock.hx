@@ -10,9 +10,9 @@ import ws.Server;
 
 class RandomMessageGenerator {
 
-  static var usernames: Array<String> = ['squier', 'welovegames', 'lirik', 'rutony'];
+  static var usernames: Array<String> = ['squier', 'welovegames', 'lirik', 'rutony', 'pyboosted', 'user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7'];
   static var messages: Array<String> = ['^_^', '1', '2', 'Всем привет!'];
-  static var sources: Array<String> = ['GG', 'Twitch', 'YouTube'];
+  static var sources: Array<String> = ['GG', 'Twitch', 'YouTube', 'sc2tv'];
 
   public static function generateMessage() {
 
@@ -36,7 +36,7 @@ class RutonyMock {
   public static function main() {
 
     var server = new ws.Server({ port: 8383 });
-    var timer = new haxe.Timer(2000);
+    var timer = new haxe.Timer(1000);
 
     timer.run = function () {
       
