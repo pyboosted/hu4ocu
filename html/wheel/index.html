@@ -31,57 +31,22 @@
       /*transition: transform 0.2s linear;*/
     }
 
-    li.user {
-      opacity: 0;
-    }
-    li.user:nth-child(1) {
-      opacity: 0.1;
-    }
-    li.user:nth-child(2) {
-      opacity: 0.3;
-    }
-    li.user:nth-child(3) {
-      opacity: 0.5;
-    }
-    li.user:nth-child(4) {
-      opacity: 0.7;
-    }
-    li.user:nth-child(5) {
-      opacity: 0.9;
-    }
-
-    li.user:nth-child(6) {
-      opacity: 1;
-      /*background: url(img/username_selected.png) no-repeat;*/
-    }
-
-    li.user:nth-child(7) {
-      opacity: 0.9;
-    }
-    li.user:nth-child(8) {
-      opacity: 0.8;
-    }
-    li.user:nth-child(9) {
-      opacity: 0.7;
-    }
-    li.user:nth-child(10) {
-      opacity: 0.6;
-    }
-    li.user:nth-child(11) {
-      opacity: 0.5;
-    }
-    li.user:nth-child(12) {
-      opacity: 0.4;
-    }
-    li.user:nth-child(13) {
-      opacity: 0.3;
-    }
-    li.user:nth-child(14) {
-      opacity: 0.2;
-    }
-    li.user:nth-child(15) {
-      opacity: 0.1;
-    }
+    li.user { opacity: 0; }
+    li.user:nth-child(1) { opacity: 0.1; }
+    li.user:nth-child(2) { opacity: 0.3; }
+    li.user:nth-child(3) { opacity: 0.5; }
+    li.user:nth-child(4) { opacity: 0.7; }
+    li.user:nth-child(5) { opacity: 0.9; }
+    li.user:nth-child(6) { opacity: 1; }
+    li.user:nth-child(7) { opacity: 0.9; }
+    li.user:nth-child(8) { opacity: 0.8; }
+    li.user:nth-child(9) { opacity: 0.7; }
+    li.user:nth-child(10) { opacity: 0.6; }
+    li.user:nth-child(11) { opacity: 0.5; }
+    li.user:nth-child(12) { opacity: 0.4; }
+    li.user:nth-child(13) { opacity: 0.3; }
+    li.user:nth-child(14) { opacity: 0.2; }
+    li.user:nth-child(15) { opacity: 0.1; }
 
     .user {
       width: 547px;
@@ -112,74 +77,197 @@
 
       document.addEventListener('DOMContentLoaded', function () {
 
-        var start = 0;
-        var last = 0;
+        var users = [];
         var list = document.getElementById('userlist');
-        var nth = 0;
+        for (var i = 0; i < 100; i++) {
+          users.push('Nagibator_' + (i+1));
+        }
+
+        function populateList(users) {
+          list.innerHTML = '';
+          for (var user in users) {
+            var li = document.createElement('li');
+            li.classList.add('user');
+            li.appendChild(document.createTextNode(users[user]));
+            list.appendChild(li);
+          }
+        }
+
+        populateList(users);
+
+        var isRunning = false;
+        var isPreview = false;
+        if (window.self !== window.top) {
+          isPreview = true;
+          document.body.classList.add('iframe');
+          document.body.classList.remove('direct');
+        } else {
+          document.body.classList.add('direct');
+          document.body.classList.remove('iframe');
+        }
+        var audioStart = document.getElementById('start');
+        var audioEnd = document.getElementById('end');
+        var audioLoop1 = document.getElementById('loop1');
+        var audioLoop2 = document.getElementById('loop2');
+
+        var audioInterval = null;
+        var audioOrd = true;
+
+        var speed = 900; //px per msecond; recommended - cellHeight * 10;
+        var cellHeight = 71;
+        var timeToStart = 10; // sec
+        var timeToStop = 10; // sec
+
+        var minDistanceToStop = speed * timeToStop / 2; // at^2/2 == (v/t)*t*t/2 == v*t/2
+        var minCellsToStop = Math.ceil(minDistanceToStop / cellHeight);
+
+        // t in seconds
+        function speedT(t) {
+          if (t >= timeToStart) return speed;
+          return speed * t/timeToStart;
+        }
+
+        function audioPlay() {
+          if (isPreview) return;
+          audioStart.play();
+          audioLoop1.play();
+          audioInterval = setInterval(function () {
+            audioOrd = !audioOrd;
+            if (audioOrd) {
+              audioLoop1.play();
+            } else {
+              audioLoop2.play();
+            }
+          }, 1000);
+
+        }
+        function audioStop() {
+          
+          if (isPreview) return;
+
+          audioEnd.play();
+
+          setTimeout(function () {
+            if (audioInterval != null) {
+              clearInterval(audioInterval);
+            }
+            audioLoop1.pause();
+            audioLoop2.pause();
+          }, 450);
+        }
+
+        var start = 0;
 
         var stepSize = 150;
         var ceilHeight = 71;
 
         var prev = null;
+        var offset = 0;
+        var lt = 0;
 
+        var stepsDone = 0;
+
+        var pathToGo = users.length * cellHeight;
+        var startStoppingAtOffset = null;
+        var isStopping = false;
+        var stoppingStart = null;
         function step(timestamp) {
 
           var progress = timestamp - start;
 
-          var currentStep = Math.ceil(progress / stepSize);
-          var offset = (progress % stepSize) / stepSize * ceilHeight;
+          var dt = timestamp - lt;
+          lt = timestamp;
+          
+          if (dt < 0) dt = 0;
 
+          if (!isStopping) {
+            var v = speedT(progress / 1000);
+            var path = v * dt / 1000;
+            offset += path;
+          } else {
+            if (stoppingStart == null) {
+              stoppingStart = timestamp;
+            }
+            var progressBeforeStop = timestamp - stoppingStart;
+            var v = speed - speedT(progressBeforeStop / 1000);
+            var path = v * dt / 1000;
+            offset += path;
+
+            if (v == 0) {
+              list.children[5].classList.add('user__selected');
+              audioStop();
+              return;
+            }
+          }
           
 
-          if (currentStep != last) {
-            
-            last = currentStep;
-
-            // if (prev !== null) {
-            //   prev.classList.remove('user__selected');
-            // }
-
-            // prev = list.children[6];
-            // prev.classList.add('user__selected');
-
-            list.appendChild(list.children[0]);
+          var stepsToDo = Math.floor((offset - stepsDone * cellHeight) / cellHeight);
+          if (stepsToDo > 0) {
+            for (var i = 0; i < stepsToDo; i++) {
+              list.appendChild(list.children[0]);
+            }
+            stepsDone += stepsToDo;
+            if (stepsDone == startStoppingAtOffset) {
+              isStopping = true;
+              console.log('Now stopping');
+            }
           }
-
-          list.style.webkitTransform = 'translate(0, ' + -offset + 'px)';  
+          list.style.webkitTransform = 'translate(0, ' + - (offset - stepsDone * cellHeight) + 'px)';  
           
           requestAnimationFrame(step);
         }
-        requestAnimationFrame(step);
+
+        function run() {
+          stepsDone = 0;
+          prev = null;
+          offset = 0;
+          lt = 0;
+          startStoppingAtOffset = null;
+          isStopping = false;
+          stoppingStart = null;
+          audioPlay();
+          requestAnimationFrame(step);
+        }
+
+        setTimeout(function () {
+          run();
+        }, 0);
+
+        setTimeout(function () {
+          var l = users.length;
+          var n = Math.floor(Math.random()*l);
+          console.log('Picked ' + n + ', ' + users[n]);
+          console.log('Steps done', stepsDone);
+          console.log('Current offset', stepsDone % l);
+
+          var currentOffset = stepsDone % l;
+          var stepsToGo;
+          if (currentOffset < n) {
+            stepsToGo = n - currentOffset;
+          } else {
+            stepsToGo = l - currentOffset + n;
+          }
+          if (stepsToGo < minCellsToStop) {
+            stepsToGo += l;
+          }
+          stepsToGo -= 4; // to be at center
+          startStoppingAtOffset = stepsDone + stepsToGo - minCellsToStop;
+          
+          console.log('Steps to go', stepsToGo);
+          console.log('Min cells to stop', minCellsToStop);
+          console.log('Start stopping at offset', startStoppingAtOffset);
+        }, 12000);
+
 
       });
-
-      
-
-      
 
     </script>
   </head>
   <body>
-    <ul class="userlist" id="userlist">
-      <li class="user">Nagibator_1</li>
-      <li class="user">Nagibator_2</li>
-      <li class="user">Nagibator_3</li>
-      <li class="user">Nagibator_4</li>
-      <li class="user">Nagibator_5</li>
-      <li class="user">Nagibator_6</li>
-      <li class="user">Nagibator_7</li>
-      <li class="user">Nagibator_8</li>
-      <li class="user">Nagibator_9</li>
-      <li class="user">Nagibator_10</li>
-      <li class="user">Nagibator_11</li>
-      <li class="user">Nagibator_12</li>
-      <li class="user">Nagibator_13</li>
-      <li class="user">Nagibator_14</li>
-      <li class="user">Nagibator_15</li>
-      <li class="user">Nagibator_16</li>
-      <li class="user">Nagibator_17</li>
-      <li class="user">Nagibator_18</li>
-      <li class="user">Nagibator_19</li>
-    </ul>
+    <ul class="userlist" id="userlist"></ul>
+    <audio id="start" src="sounds/start.wav" volume="0.3"></audio>
+    <audio id="loop1" src="sounds/loop.wav" volume="0.3"></audio>
+    <audio id="loop2" src="sounds/loop.wav" volume="0.3"></audio>
+    <audio id="end" src="sounds/end.wav" volume="0.3"></audio>
   </body>
 </body>
