@@ -12,7 +12,7 @@ typedef WheelConfig = {
   status: WheelStatus,
   list: Array<String>,
   keyword: String,
-  winner: String
+  winner: Int
 };
 
 
@@ -74,7 +74,8 @@ class Wheel extends Service {
 
     });
 
-    app.ui.when('wheel.get', function (keyword) {
+    app.ui.when('wheel.get', function (_) {
+      trace('wheel.get');
       return config;
     });
 
@@ -84,8 +85,15 @@ class Wheel extends Service {
       return config;
     });
 
-    app.ui.when('wheel.update', function (list) {
-      config.list = list;
+    app.ui.when('wheel.update', function (list:Array<String>) {
+      var users = [];
+      for (item in list) {
+        if(item.trim().length > 0) {
+          users.push(item);
+        }
+      }
+      config.list = users;
+      config.status = NotRunning;
       config.winner = null;
       broadcast('wheel.update');
       return config;
@@ -93,16 +101,31 @@ class Wheel extends Service {
 
     app.ui.when('wheel.shuffle', function (_) {
       config.list = shuffle(config.list);
+      config.status = NotRunning;
       config.winner = null;
       broadcast('wheel.update');
       return config;
     });
 
-    app.ui.when('wheel.roll', function (_) {
-      var index = Math.floor(Math.random() * config.list.length);
-      config.winner = config.list[index];
-      broadcast('wheel.winner');
+    app.ui.when('wheel.start', function (_) {
+      config.status = Running;
+      broadcast('wheel.start');
       return config;
+    });
+
+    app.ui.when('wheel.stop', function (_) {
+      var index = Math.floor(Math.random() * config.list.length);
+      config.winner = index;
+      config.status = Stopped;
+      broadcast('wheel.stop');
+      return config;
+    });
+
+    app.socketServer.on('connection', function (client) {
+      client.send(haxe.Json.stringify({
+        action: 'wheel.init',
+        config: config
+      }));
     });
   }
 

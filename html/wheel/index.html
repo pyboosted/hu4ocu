@@ -77,7 +77,7 @@
       })();  
 
 
-      var SPEED = 900, CELL_HEIGHT = 71, TIME_TO_START = 10, TIME_TO_STOP = 10;
+      var SPEED = 900, CELL_HEIGHT = 71, TIME_TO_START = 5, TIME_TO_STOP = 10;
       var minDistanceToStop = SPEED * TIME_TO_STOP / 2; // at^2/2 == (v/t)*t*t/2 == v*t/2
       var minCellsToStop = Math.ceil(minDistanceToStop / CELL_HEIGHT);
 
@@ -85,6 +85,8 @@
 
         this.listEl = config.listElement;
         this.listEl.innerHTML = '';
+        this.listEl.style.webkitTransform = 'translate(0, 0)';
+        this.sounds = config.sounds;
         this.audioStart = config.audioStart;
         this.audioStop = config.audioStop;
         this.audioLoop1 = config.audioLoop1;
@@ -93,7 +95,8 @@
         this.config = config;
         this.stepsDone = 0;
         this.offset = 0;
-        
+        this.prevOffset = null;
+        this.selected = null;
         var users = config.users;
         // add more users to list be filled
         var timesToRepeat = (users.length < 25) ? Math.ceil(25 / users.length) : 1;
@@ -118,6 +121,7 @@
       };
 
       Wheel.prototype._playStart = function () {
+        if (!this.sounds) return;
         var me = this;
         var audioOrd = true;
         this.audioStart.play();
@@ -133,6 +137,7 @@
       };
 
       Wheel.prototype._playStop = function () {
+        if (!this.sounds) return;
         var me = this;
         this.audioStop.play();
         setTimeout(function () {
@@ -144,56 +149,61 @@
         }, 450);
       };
 
-      Wheel.prototype._speedStart = function(t) {
-        if (t >= TIME_TO_START) return SPEED;
-        return SPEED * t/TIME_TO_START;
-      };
+      Wheel.prototype.calculatePath = function (_t) {
+        
+        var t = _t;
+        if (t <= TIME_TO_START) {
+          return (SPEED / TIME_TO_START) * t * t / 2;
+        }
 
-      Wheel.prototype._speedStop = function(t) {
-        if (t >= TIME_TO_STOP) return 0;
-        return SPEED - SPEED * t/TIME_TO_STOP;
+        var acceleratedPath = SPEED * TIME_TO_START / 2;
+        var linearPath = (t - TIME_TO_START) * SPEED;
+        var stoppingPath = 0;
+
+        if (this.stoppingStart != null) {
+          var stoppingStart = this.stoppingStart / 1000;
+          var stoppingFor = t - stoppingStart;
+          linearPath -= stoppingFor * SPEED;
+          stoppingPath = SPEED * stoppingFor - (SPEED/TIME_TO_STOP)*stoppingFor*stoppingFor/2;
+        }
+
+        return acceleratedPath + linearPath + stoppingPath;
       };
 
       Wheel.prototype._step = function (timestamp) {
         if (this.startTime === null) this.startTime = timestamp;
-        var progress = timestamp - this.startTime;
-        var dt = timestamp - this.lastTime;
+        var t = timestamp - this.startTime;
 
-        this.lastTime = timestamp;
-        
-        if (!this.isStopping) {
-          var v = this._speedStart(progress / 1000);
-          var path = v * dt / 1000;
-          this.offset += path;
-        } else {
+        if (this.isStopping) {
           if (this.stoppingStart == null) {
-            this.stoppingStart = timestamp;
-          }
-          var progressBeforeStop = timestamp - this.stoppingStart;
-          var v = this._speedStop(progressBeforeStop / 1000);
-          var path = v * dt / 1000;
-          this.offset += path;
-
-          if (v == 0) {
-            this.listEl.children[5].classList.add('user__selected');
-            this._playStop();
-            this.stepsToReset = this.users.length - this.stepsDone % this.users.length;
-            return;
+            this.stoppingStart = t;
           }
         }
 
+        this.offset = this.calculatePath(t/1000);
+        if (this.prevOffset !== null && this.prevOffset > this.offset) {
+          this.selected.classList.add('user__selected');
+          this._playStop();
+          return;
+        }
+        this.prevOffset = this.offset;
         var stepsToDo = Math.floor((this.offset - this.stepsDone * CELL_HEIGHT) / CELL_HEIGHT);
         if (stepsToDo > 0) {
           for (var i = 0; i < stepsToDo; i++) {
             this.listEl.appendChild(this.listEl.children[0]);
           }
           this.stepsDone += stepsToDo;
-          if (this.stepsDone == this.startStoppingAtOffset) {
+          if (this.startStoppingAtOffset !== null && this.stepsDone >= this.startStoppingAtOffset) {
             this.isStopping = true;
-            console.log('Now stopping');
+          }
+          if (this.plannedStop !== null && this.stepsDone >= this.plannedStop) {
+            this.plannedStop = null;
+            this.selected = this.listEl.children[5];
+            this.stepsToReset = this.users.length - this.stepsDone % this.users.length;
           }
         }
-        this.listEl.style.webkitTransform = 'translate(0, ' + - (this.offset - this.stepsDone * CELL_HEIGHT) + 'px)';  
+
+        this.listEl.style.webkitTransform = 'translate(0, ' + - (this.offset - this.stepsDone * CELL_HEIGHT) + 'px)';
         
         requestAnimationFrame(this._step.bind(this));
       };
@@ -210,11 +220,13 @@
         // }
         this.stepsToReset = 0;
         this.lastTime = 0;
+        this.plannedStop = null;
         this.startTime = null;
         this.startStoppingAtOffset = null;
         this.isStopping = false;
         this.stoppingStart = null;
-
+        this.prevOffset = null;
+        this.selected = null;
         if (this.audioInterval != null) clearInterval(this.audioInterval);
         this.audioInterval = null;
       };
@@ -225,9 +237,7 @@
 
         var l = this.usersLength;
         console.log('Picked ' + fakeN + ', ' + this.users[fakeN]);
-        console.log('Steps done', this.stepsDone);
-        console.log('Current offset', this.stepsDone % l);
-
+        
         var currentOffset = this.stepsDone % l;
         var stepsToGo;
         if (currentOffset < n) {
@@ -235,15 +245,14 @@
         } else {
           stepsToGo = l - currentOffset + n;
         }
-        if (stepsToGo < minCellsToStop) {
+        if (stepsToGo <= minCellsToStop) {
           stepsToGo += l * Math.ceil(minCellsToStop / l);
         }
         stepsToGo -= 4; // to be at center
         this.startStoppingAtOffset = this.stepsDone + stepsToGo - minCellsToStop;
+        this.plannedStop = this.startStoppingAtOffset + minCellsToStop - 1;
 
-        console.log('Steps to go', stepsToGo);
-        console.log('Min cells to stop', minCellsToStop);
-        console.log('Start stopping at offset', this.startStoppingAtOffset);
+        console.log('Going to stop at' + this.plannedStop);
       };
 
       document.addEventListener('DOMContentLoaded', function () {
@@ -258,37 +267,69 @@
           document.body.classList.remove('iframe');
         }
 
-        var users = [];
-        for (var i = 0; i < 5; i++) {
-          users.push('Nagibator_' + (i+1));
-        }
+        // var users = [];
+        // for (var i = 0; i < 5; i++) {
+        //   users.push('Nagibator_' + (i+1));
+        // }
 
-        var wheel = new Wheel({
-          users: users,
+        // var wheel = new Wheel({
+        //   users: users,
+        //   listElement: document.getElementById('userlist'),
+        //   audioStart: document.getElementById('start'),
+        //   audioStop: document.getElementById('end'),
+        //   audioLoop1: document.getElementById('loop1'),
+        //   audioLoop2: document.getElementById('loop2'),
+        //   sounds: !IS_PREVIEW
+        // });
+
+               
+        // wheel.start();
+        
+        // setTimeout(function () {
+        //   var n = Math.floor(Math.random() * users.length);
+        //   wheel.stopAt(n);
+        // }, 10000);
+
+        // setTimeout(function () {
+        //   wheel.start();
+        // }, 25000);
+
+        // setTimeout(function () {
+        //   var n = Math.floor(Math.random() * users.length);
+        //   wheel.stopAt(n);
+        // }, 35000);
+
+        var wheelConfig = {
           listElement: document.getElementById('userlist'),
           audioStart: document.getElementById('start'),
           audioStop: document.getElementById('end'),
           audioLoop1: document.getElementById('loop1'),
           audioLoop2: document.getElementById('loop2'),
           sounds: !IS_PREVIEW
-        });
+        };
 
-       
-        wheel.start();
-        
-        setTimeout(function () {
-          var n = Math.floor(Math.random() * users.length);
-          wheel.stopAt(n);
-        }, 10000);
-
-        setTimeout(function () {
-          wheel.start();
-        }, 25000);
-
-        setTimeout(function () {
-          var n = Math.floor(Math.random() * users.length);
-          wheel.stopAt(n);
-        }, 35000);
+        var socket = new WebSocket('ws://localhost:8081/wheel');
+        var wheel;
+        socket.onmessage = function (data) {
+          var message = JSON.parse(data.data);
+          if (message.action.indexOf('wheel.') !== 0) return;
+          if (message.action == 'wheel.init' || message.action == 'wheel.update') {
+            if (message.config.list.length > 0) {
+              wheelConfig.users = message.config.list;
+              wheel = new Wheel(wheelConfig);
+            }
+          }
+          if (message.action == 'wheel.start') {
+            if (wheel != null) {
+              wheel.start();
+            }
+          }
+          if (message.action == 'wheel.stop') {
+            if (wheel != null) {
+              wheel.stopAt(message.config.winner);
+            }
+          }
+        };
 
       });
 

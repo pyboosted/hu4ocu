@@ -19,10 +19,12 @@
     });
 
     socket.onmessage = function (data) {
-      var message = JSON.parse(data.data);
 
-      var leftVotes = message.config.votes1.length;
-      var rightVotes = message.config.votes2.length;
+      var message = JSON.parse(data.data);
+      if (message.action.indexOf('polls.') !== 0) return;
+
+      var leftVotes = message.config.votes1 ? message.config.votes1.length : 0;
+      var rightVotes = message.config.votes2 ? message.config.votes2.length : 0;
 
       var max = leftVotes + rightVotes;
       if (!max) max = 1;

@@ -46,7 +46,7 @@ class Polls extends Service {
       votes2: []
     };
 
-    app.ui.when('polls.get', function (data) {
+    app.ui.when('polls.get', function (_) {
       return this.getConfig();
     });
 
@@ -106,7 +106,7 @@ class Polls extends Service {
 
       if (key != null) {
         app.socketServer.broadcast(haxe.Json.stringify({
-          action: 'vote',
+          action: 'polls.vote',
           key: key,
           username: username,
           config: config
@@ -117,7 +117,7 @@ class Polls extends Service {
 
     app.socketServer.on('connection', function (client) {
       client.send(haxe.Json.stringify({
-        action: 'init',
+        action: 'polls.init',
         key: null,
         username: null,
         config: config
