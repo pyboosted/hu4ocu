@@ -14,6 +14,7 @@ import chats.ChatProviders;
 
 import services.Polls;
 import services.Wheel;
+import services.Transitions;
 
 class Server {
 
@@ -24,6 +25,7 @@ class Server {
 
   public var polls: Polls;
   public var wheel: Wheel;
+  public var transitions: Transitions;
 
   public function new(port: Int) {
     ui = new UI();
@@ -40,7 +42,7 @@ class Server {
 
     polls = new Polls(this);
     wheel = new Wheel(this);
-    
+    transitions = new services.Transitions(this);
 
   }
 

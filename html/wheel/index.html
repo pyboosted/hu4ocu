@@ -49,7 +49,10 @@
     li.user:nth-child(15) { opacity: 0.1; }
 
     .user {
-      width: 547px;
+      width: 547px; max-width: 547px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       height: 71px;
       background: url(img/username.png) no-repeat;
       text-align: center;
