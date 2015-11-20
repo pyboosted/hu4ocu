@@ -12,6 +12,9 @@ var WheelClient = function() {
 		_g.saveBtn = _g.doc.getElementById("save");
 		_g.startBtn = _g.doc.getElementById("start");
 		_g.stopBtn = _g.doc.getElementById("stop");
+		_g.speedingLabel = _g.doc.getElementById("speeding");
+		_g.slowingLabel = _g.doc.getElementById("slowing");
+		_g.winnerLabel = _g.doc.getElementById("winner");
 		_g.startBtn.addEventListener("click",function(_) {
 			_g.config = electron_IPC.sendSync("wheel.start");
 			_g.updateBtns();
@@ -31,6 +34,11 @@ var WheelClient = function() {
 			_g.updateUsers();
 			_g.updateBtns();
 		});
+		var timer = new haxe_Timer(500);
+		timer.run = function() {
+			_g.config = electron_IPC.sendSync("wheel.get");
+			_g.updateBtns();
+		};
 		_g.updateUsers();
 		_g.updateBtns();
 	});
@@ -48,21 +56,59 @@ WheelClient.prototype = {
 			this.saveBtn.style.display = "inline";
 			if(this.config.list.length > 0) this.startBtn.style.display = "inline"; else this.startBtn.style.display = "none";
 			this.stopBtn.style.display = "none";
+			this.slowingLabel.style.display = "none";
+			this.speedingLabel.style.display = "none";
+			this.winnerLabel.style.display = "none";
+		}
+		if(this.config.status == "speeding") {
+			this.shuffleBtn.style.display = "none";
+			this.saveBtn.style.display = "none";
+			this.startBtn.style.display = "none";
+			this.stopBtn.style.display = "none";
+			this.slowingLabel.style.display = "none";
+			this.speedingLabel.style.display = "inline";
+			this.winnerLabel.style.display = "none";
 		}
 		if(this.config.status == "running") {
 			this.shuffleBtn.style.display = "none";
 			this.saveBtn.style.display = "none";
 			this.startBtn.style.display = "none";
 			this.stopBtn.style.display = "inline";
+			this.slowingLabel.style.display = "none";
+			this.speedingLabel.style.display = "none";
+			this.winnerLabel.style.display = "none";
+		}
+		if(this.config.status == "slowing") {
+			this.shuffleBtn.style.display = "none";
+			this.saveBtn.style.display = "none";
+			this.startBtn.style.display = "none";
+			this.stopBtn.style.display = "none";
+			this.slowingLabel.style.display = "inline";
+			this.speedingLabel.style.display = "none";
+			this.winnerLabel.style.display = "none";
 		}
 		if(this.config.status == "stopped") {
 			this.shuffleBtn.style.display = "inline";
 			this.saveBtn.style.display = "inline";
 			this.startBtn.style.display = "none";
 			this.stopBtn.style.display = "none";
+			this.slowingLabel.style.display = "none";
+			this.speedingLabel.style.display = "none";
+			this.winnerLabel.style.display = "inline";
+			this.winnerLabel.innerHTML = "Победитель: " + this.config.list[this.config.winner];
 		}
 	}
 };
 var electron_IPC = require("ipc");
+var haxe_Timer = function(time_ms) {
+	var me = this;
+	this.id = setInterval(function() {
+		me.run();
+	},time_ms);
+};
+haxe_Timer.prototype = {
+	run: function() {
+	}
+};
 WheelClient.main();
 })(typeof console != "undefined" ? console : {log:function(){}});

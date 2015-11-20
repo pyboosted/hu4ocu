@@ -4,7 +4,9 @@ using StringTools;
 
 @:enum abstract WheelStatus(String) {
   var NotRunning = 'not_running';
+  var Speeding = 'speeding';
   var Running = 'running';
+  var Slowing = 'slowing';
   var Stopped = 'stopped';
 }
 
@@ -108,16 +110,24 @@ class Wheel extends Service {
     });
 
     app.ui.when('wheel.start', function (_) {
-      config.status = Running;
+      config.status = Speeding;
       broadcast('wheel.start');
+      haxe.Timer.delay(function () {
+        config.status = Running;
+        broadcast('wheel.canstop');
+      }, 6000);
       return config;
     });
 
     app.ui.when('wheel.stop', function (_) {
       var index = Math.floor(Math.random() * config.list.length);
       config.winner = index;
-      config.status = Stopped;
+      config.status = Slowing;
       broadcast('wheel.stop');
+      haxe.Timer.delay(function () {
+        config.status = Stopped;
+        broadcast('wheel.canreset');
+      }, 11000);
       return config;
     });
 

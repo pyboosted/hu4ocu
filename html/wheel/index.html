@@ -14,8 +14,14 @@
       padding: 0px;
       margin: 0px;
       font-family: WT;
-      overflow: hidden;
       pointer-events: none;
+      width: 100%; height: 100%;
+    }
+
+    body {
+      position: absolute; 
+      width: 100%; height: 100%;
+      overflow: hidden;
     }
 
     ul.userlist, li.user {
@@ -24,29 +30,30 @@
     }
 
     .userlist {
-      margin-left: auto !important; 
-      margin-right: auto !important;
       width: 547px;
-
+      position: absolute;
+      left: calc(50% - 273px);
+      top: calc(50% - 532px);
+      height: 1065px;
       /*transition: transform 0.2s linear;*/
     }
 
-    li.user { opacity: 0; }
-    li.user:nth-child(1) { opacity: 0.1; }
-    li.user:nth-child(2) { opacity: 0.3; }
-    li.user:nth-child(3) { opacity: 0.5; }
-    li.user:nth-child(4) { opacity: 0.7; }
-    li.user:nth-child(5) { opacity: 0.9; }
-    li.user:nth-child(6) { opacity: 1; }
-    li.user:nth-child(7) { opacity: 0.9; }
-    li.user:nth-child(8) { opacity: 0.8; }
-    li.user:nth-child(9) { opacity: 0.7; }
-    li.user:nth-child(10) { opacity: 0.6; }
-    li.user:nth-child(11) { opacity: 0.5; }
-    li.user:nth-child(12) { opacity: 0.4; }
-    li.user:nth-child(13) { opacity: 0.3; }
-    li.user:nth-child(14) { opacity: 0.2; }
-    li.user:nth-child(15) { opacity: 0.1; }
+    .user { opacity: 0; }
+    .user:nth-child(2) { opacity: 0.05; }
+    .user:nth-child(3) { opacity: 0.1; }
+    .user:nth-child(4) { opacity: 0.2; }
+    .user:nth-child(5) { opacity: 0.3; }
+    .user:nth-child(6) { opacity: 0.5; }
+    .user:nth-child(7) { opacity: 0.7; }
+    .user:nth-child(8) { opacity: 0.9; }
+    .user:nth-child(9) { opacity: 1; }
+    .user:nth-child(10) { opacity: 0.9; }
+    .user:nth-child(11) { opacity: 0.7; }
+    .user:nth-child(12) { opacity: 0.5; }
+    .user:nth-child(13) { opacity: 0.3; }
+    .user:nth-child(14) { opacity: 0.2; }
+    .user:nth-child(15) { opacity: 0.1; }
+    .user:nth-child(16) { opacity: 0.05; }
 
     .user {
       width: 547px; max-width: 547px;
@@ -80,7 +87,7 @@
       })();  
 
 
-      var SPEED = 900, CELL_HEIGHT = 71, TIME_TO_START = 5, TIME_TO_STOP = 10;
+      var SPEED = 900, CELL_HEIGHT = 71, TIME_TO_START = 5, TIME_TO_STOP = 10, HEIGHT = CELL_HEIGHT * 15;
       var minDistanceToStop = SPEED * TIME_TO_STOP / 2; // at^2/2 == (v/t)*t*t/2 == v*t/2
       var minCellsToStop = Math.ceil(minDistanceToStop / CELL_HEIGHT);
 
@@ -96,6 +103,7 @@
         this.audioLoop2 = config.audioLoop2;
         this.users = [];
         this.config = config;
+        this.slowMode = config.slowMode;
         this.stepsDone = 0;
         this.offset = 0;
         this.prevOffset = null;
@@ -152,14 +160,18 @@
         }, 450);
       };
 
+      var SPEED_DIV_TIMESTART = SPEED / TIME_TO_START;
+      var SPEED_BY_TIMESTART = SPEED * TIME_TO_START;
+      var SPEED_DIV_TIMESTOP = SPEED / TIME_TO_STOP;
+
       Wheel.prototype.calculatePath = function (_t) {
         
         var t = _t;
         if (t <= TIME_TO_START) {
-          return (SPEED / TIME_TO_START) * t * t / 2;
+          return SPEED_DIV_TIMESTART * t * t / 2;
         }
 
-        var acceleratedPath = SPEED * TIME_TO_START / 2;
+        var acceleratedPath = SPEED_BY_TIMESTART / 2;
         var linearPath = (t - TIME_TO_START) * SPEED;
         var stoppingPath = 0;
 
@@ -167,7 +179,7 @@
           var stoppingStart = this.stoppingStart / 1000;
           var stoppingFor = t - stoppingStart;
           linearPath -= stoppingFor * SPEED;
-          stoppingPath = SPEED * stoppingFor - (SPEED/TIME_TO_STOP)*stoppingFor*stoppingFor/2;
+          stoppingPath = SPEED * stoppingFor - SPEED_DIV_TIMESTOP * stoppingFor * stoppingFor/2;
         }
 
         return acceleratedPath + linearPath + stoppingPath;
@@ -190,7 +202,7 @@
           return;
         }
         this.prevOffset = this.offset;
-        var stepsToDo = Math.floor((this.offset - this.stepsDone * CELL_HEIGHT) / CELL_HEIGHT);
+        var stepsToDo = Math.floor(this.offset / CELL_HEIGHT) - this.stepsDone;
         if (stepsToDo > 0) {
           for (var i = 0; i < stepsToDo; i++) {
             this.listEl.appendChild(this.listEl.children[0]);
@@ -201,13 +213,12 @@
           }
           if (this.plannedStop !== null && this.stepsDone >= this.plannedStop) {
             this.plannedStop = null;
-            this.selected = this.listEl.children[5];
+            this.selected = this.listEl.children[8];
             this.stepsToReset = this.users.length - this.stepsDone % this.users.length;
           }
         }
 
         this.listEl.style.webkitTransform = 'translate(0, ' + - (this.offset - this.stepsDone * CELL_HEIGHT) + 'px)';
-        
         requestAnimationFrame(this._step.bind(this));
       };
 
@@ -251,7 +262,7 @@
         if (stepsToGo <= minCellsToStop) {
           stepsToGo += l * Math.ceil(minCellsToStop / l);
         }
-        stepsToGo -= 4; // to be at center
+        stepsToGo -= 7; // to be at center
         this.startStoppingAtOffset = this.stepsDone + stepsToGo - minCellsToStop;
         this.plannedStop = this.startStoppingAtOffset + minCellsToStop - 1;
 
@@ -308,7 +319,8 @@
           audioStop: document.getElementById('end'),
           audioLoop1: document.getElementById('loop1'),
           audioLoop2: document.getElementById('loop2'),
-          sounds: !IS_PREVIEW
+          sounds: !IS_PREVIEW,
+          slowMode: IS_PREVIEW
         };
 
         var socket = new WebSocket('ws://localhost:8081/wheel');
@@ -338,7 +350,7 @@
 
     </script>
   </head>
-  <body>
+  <body class="direct">
     <ul class="userlist" id="userlist"></ul>
     <audio id="start" src="sounds/start.wav" volume="0.3"></audio>
     <audio id="loop1" src="sounds/loop.wav" volume="0.3"></audio>
