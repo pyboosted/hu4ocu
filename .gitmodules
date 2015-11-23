@@ -1,12 +1,12 @@
-[submodule "libs/hx-async"]
-  path = libs/hx-async
-  url = https://github.com/stroncium/hx-async
-[submodule "libs/hx-node"]
-  path = libs/hx-node
-  url = https://github.com/stroncium/hx-node
-[submodule "libs/hx-mithril-simple"]
-  path = libs/hx-mithril-simple
-  url = https://github.com/stroncium/hx-mithril-simple
 [submodule "libs/haxetoml"]
-  path = libs/haxetoml
-  url = https://github.com/raincole/haxetoml
+	path = libs/haxetoml
+	url = https://github.com/raincole/haxetoml
+[submodule "libs/hx-mithril-simple"]
+	path = libs/hx-mithril-simple
+	url = https://github.com/stroncium/hx-mithril-simple
+[submodule "libs/hx-node"]
+	path = libs/hx-node
+	url = https://github.com/stroncium/hx-node
+[submodule "libs/hx-async"]
+	path = libs/hx-async
+	url = https://github.com/stroncium/hx-async
