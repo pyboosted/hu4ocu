@@ -33,8 +33,8 @@ bin/widgets/polls/app.js:
 
 utils: bin/utils/rutony-mock.js
 bin/utils/rutony-mock.js:
-	touch	bin/utils/rutony-mock.js
-
+	haxe 	-js bin/utils/rutony-mock.js -main RutonyMock \
+				-cp utils/rutony-mock/src $(SHARED) $(LIB-ASYNC) $(LIB-NODE) $(LIB-TOML) $(LIB-WS)
 run: all
 	electron .
 
