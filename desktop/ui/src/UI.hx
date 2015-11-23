@@ -7,8 +7,6 @@ import Mithril.*;
   
   static function run() {
 
-    trace('run');
-
     route(document.getElementById('app'), '/', {
       '/': component(Root, null)
     });
@@ -16,9 +14,7 @@ import Mithril.*;
     setRoute('/');
   }
 
-  public static function main() {
-    trace('desktop/ui');
-  }
+  public static function main() {}
 
 }
 
