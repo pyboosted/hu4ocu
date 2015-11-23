@@ -1,8 +1,15 @@
+package lib;
+
+typedef StaticServerConfig = {
+  path: String, 
+  port: Int
+};
+
 class StaticServer {
 
-  public function new(path: String, ?port: Int = 8080) {
+  public function new(config: StaticServerConfig) {
 
-    var fileServer = new nodestatic.Server(path, { cache: 0 });
+    var fileServer = new nodestatic.Server(config.path, { cache: 0 });
     var httpServer = node.Http.createServer(function (req, res) {
       req.addListener('end', function () {
         fileServer.serve(req, res, function (err, result) {
@@ -15,10 +22,11 @@ class StaticServer {
           }
 
         });
-      }).resume();
+      });
+      req.resume();
     });
 
-    httpServer.listen(port);
+    httpServer.listen(config.port);
 
   }
 

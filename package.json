@@ -1,7 +1,7 @@
 {
   "name"    : "hu4ocu",
-  "version" : "0.1.0",
-  "main"    : "bin/app.js",
+  "version" : "0.2.0",
+  "main"    : "bin/desktop/app.js",
   "dependencies": {
     "ws": "latest",
     "node-static": "latest"
