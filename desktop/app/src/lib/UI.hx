@@ -19,7 +19,7 @@ class UI {
     });
 
     App.on('ready', function () {
-      window = new BrowserWindow({ width: 420, height: 600, frame: false, show: false });
+      window = new BrowserWindow({ width: 420, 'min-width': 420, 'min-height': 400, height: 600, frame: false, show: false });
       window.loadUrl('file://' + untyped __js__('__dirname') + '/html/index.html');
       haxe.Timer.delay(function(){
         untyped window.show();
@@ -28,6 +28,11 @@ class UI {
       window.on('closed', function () {
         window = null;
       });
+    });
+
+    this.on('quit', function (_) {
+      App.quit();
+      return null;
     });
 
   }

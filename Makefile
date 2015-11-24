@@ -15,7 +15,7 @@ desktop/app: bin/desktop/app.js
 
 bin/desktop/html/ui.js: 
 	haxe 	-js bin/desktop/html/ui.js -main UI \
-				-cp desktop/ui/src $(SHARED) $(LIB-ASYNC) $(LIB-MITHRIL)
+				-cp desktop/ui/src $(SHARED) $(LIB-ASYNC) $(LIB-MITHRIL) $(LIB-ELECTRON)
 bin/desktop/html/ui.css: 
 	touch bin/desktop/html/ui.css
 

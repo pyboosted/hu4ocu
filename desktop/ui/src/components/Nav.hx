@@ -1,6 +1,7 @@
 package components;
 
 import Mithril.*;
+import electron.IPC;
 
 using StringTools;
 
@@ -38,7 +39,7 @@ class Nav {
   }
   
   function exit() {
-    trace('exit');
+    electron.IPC.sendSync('quit');
   }
 
   public function view() return m('', [ 
