@@ -10,7 +10,7 @@ SHARED = -cp shared
 all: desktop widgets utils
 
 desktop: desktop/ui desktop/app
-desktop/ui: bin/desktop/html/ui.js bin/desktop/html/ui.css
+desktop/ui: bin/desktop/html/ui.js
 desktop/app: bin/desktop/app.js
 
 bin/desktop/html/ui.js: 
@@ -42,7 +42,6 @@ clean: clean/desktop clean/widgets clean/utils
 clean/desktop:
 	-rm bin/desktop/app.js
 	-rm bin/desktop/html/ui.js
-	-rm bin/desktop/html/ui.css
 clean/widgets:
 	-rm bin/widgets/wheel/app.js
 	-rm bin/widgets/polls/app.js

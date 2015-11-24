@@ -19,9 +19,12 @@ class UI {
     });
 
     App.on('ready', function () {
-      window = new BrowserWindow({ width: 1400, height: 700 });
+      window = new BrowserWindow({ width: 1000, height: 700, show: false });
       window.loadUrl('file://' + untyped __js__('__dirname') + '/html/index.html');
-      window.openDevTools();
+      haxe.Timer.delay(function(){
+        untyped window.show();
+      }, 1000);
+      // window.openDevTools();
       window.on('closed', function () {
         window = null;
       });
