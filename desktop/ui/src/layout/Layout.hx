@@ -5,8 +5,8 @@ import Mithril.*;
 import components.Nav;
 
 class Layout {
-  public static function around(content: Mithril.Node) return m('.row', [ 
-    m('.sidebar.col',component(Nav, null)),
-    m('.content.col', content)
+  public static function around(content: Mithril.Node) return m('div', [ 
+    m('.sidebar',component(Nav, null)),
+    m('.content', content)
   ]);
 }

@@ -19,7 +19,7 @@ class UI {
     });
 
     App.on('ready', function () {
-      window = new BrowserWindow({ width: 1200, height: 700, show: false });
+      window = new BrowserWindow({ width: 420, height: 600, frame: false, show: false });
       window.loadUrl('file://' + untyped __js__('__dirname') + '/html/index.html');
       haxe.Timer.delay(function(){
         untyped window.show();

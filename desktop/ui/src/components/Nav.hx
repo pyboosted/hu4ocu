@@ -36,16 +36,19 @@ class Nav {
     }
     return active;
   }
+  
+  function exit() {
+    trace('exit');
+  }
 
-  public function view() return m('.darkblock', [ 
-    m('.header', 'Tools'),
-    m('ul.nav', [for(item in items)
+  public function view() return m('', [ 
+    m('ul.nav.noselect', [for(item in items)
       m('li' + ((item == findActive()) ? '.active' : '' ), [
         m('a' + ((item.status != null) ? '.' + item.status : '' ), 
           { onclick: setRoute.bind(item.href) }, 
           item.text)
       ])
     ]),
-    m('.small-link', m('a', { onclick: setRoute.bind('/about') },'About'))
+    m('a.exit', { onclick: function () exit() },  '×')
   ]);
 }
