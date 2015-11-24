@@ -7,11 +7,14 @@ class Wheel {
   public function new(_) {}
   public function view() return Layout.around(
     m('.lightblock', [
-      m('.header', 'Wheel'),
+      m('.small-header', 'Wheel'),
       m('ul.items-list', [
-        m('li', 'Chats'),
-        m('li', 'Polls'),
-        m('li', 'Wheel')
+        m('li', [
+          m('textarea[style="height: 200px"]')
+        ]),
+        m('li', [
+          m('button', 'Roll')
+        ]),
       ])
     ])
   );

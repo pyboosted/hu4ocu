@@ -3,10 +3,10 @@ package ;
 import js.Browser.document;
 import Mithril.*;
 
-import pages.Dashboard;
 import pages.Chats;
 import pages.Polls;
 import pages.Wheel;
+import pages.About;
 
 @:expose('UI') class UI {
   static function run() {
@@ -16,13 +16,13 @@ import pages.Wheel;
       history.replaceState = function () {};
     }
 
-    route(document.getElementById('app'), '/', {
-      '/': component(Dashboard, null),
+    route(document.getElementById('app'), '/chats', {
       '/chats': component(Chats, null),
       '/polls': component(Polls, null),
-      '/wheel': component(Wheel, null)
+      '/wheel': component(Wheel, null),
+      '/about': component(About, null),
     });
-    setRoute('/');
+    setRoute('/chats');
   }
   public static function main() {}
 }
