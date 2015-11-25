@@ -22,8 +22,9 @@ class UI {
       window = new BrowserWindow({ 
         width: 420, 
         'min-width': 420, 
-        'min-height': 400, 
-        height: 600, 
+        'min-height': 597,
+        'max-height': 597, 
+        height: 597, 
         frame: false, 
         show: false,
         icon: untyped __js__('__dirname') +  '/icon.png'

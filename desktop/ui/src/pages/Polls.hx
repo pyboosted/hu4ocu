@@ -26,16 +26,8 @@ class Polls {
             m('.col.pad-top', m('button', 'Save'))
           ]),
           m('li.row', [
-            m('.col[style="width:50%;"]', [
-              m('button', 'Run')
-            ]),
-            m('.col[style="width:50%;"]', [
-              m('button', 'Show')
-            ])
-          ]),
-          m('li.row', [
-            m('.col[style="width:50%;"]', m('.votes-count', 23)),
-            m('.col[style="width:50%;"]', m('.votes-count', 15)),
+            m('.col[style="width:50%;"]', m('.votes-count', 0)),
+            m('.col[style="width:50%;"]', m('.votes-count', 0)),
           ]),
           m('li.row', [
             m('.col[style="width:50%;"]', m('.parts', [
@@ -45,7 +37,15 @@ class Polls {
               m('textarea[rows="5"]')
             ])),
             m('.col', m('button', 'Reset'))
-          ])
+          ]),
+          m('li.row', [
+            m('.col[style="width:50%;"]', [
+              m('button.btn-dark', 'Run')
+            ]),
+            m('.col[style="width:50%;"]', [
+              m('button', 'Show')
+            ])
+          ]),
         ])
       ]),
     ])

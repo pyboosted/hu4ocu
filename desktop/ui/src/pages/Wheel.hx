@@ -11,10 +11,26 @@ class Wheel {
       m('ul.items-list', [
         m('li', [
           m('.label', 'Participants'),
-          m('textarea[style="height: 200px"]')
+          m('textarea[style="height: 235px"]')
+        ]),
+        m('li.row', [
+          m('.col[style="width:50%;"]', [
+            m('button', 'Save')
+          ]),
+          m('.col[style="width:50%;"]', [
+            m('button', 'Shuffle')
+          ])
         ]),
         m('li', [
-          m('button', 'Roll')
+          m('.votes-count', 'Not rolling yet')
+        ]),
+        m('li.row', [
+          m('.col[style="width:50%;"]', [
+            m('button.btn-dark', 'Roll')
+          ]),
+          m('.col[style="width:50%;"]', [
+            m('button', 'Show')
+          ])
         ]),
       ])
     ])
