@@ -9,6 +9,13 @@ import pages.Wheel;
 import pages.About;
 
 @:expose('UI') class UI {
+
+  static function __init__() {
+    untyped {
+      if (!require) document.require = function () {};
+    }
+  }
+
   static function run() {
 
     untyped {

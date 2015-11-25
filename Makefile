@@ -21,7 +21,7 @@ bin/desktop/html/ui.css:
 
 bin/desktop/app.js:
 	haxe 	-js bin/desktop/app.js -main App \
-				-cp desktop/app/src $(SHARED) $(LIB-ASYNC) $(LIB-NODE) $(LIB-TOML) $(LIB-WS) $(LIB-ELECTRON) $(LIB-NODESTATIC)
+				-cp desktop/app/src $(SHARED) $(LIB-ASYNC) $(LIB-NODE) $(LIB-TOML) $(LIB-WS) $(LIB-ELECTRON) $(LIB-NODESTATIC) -D client
 widgets: widgets/wheel widgets/polls
 widgets/wheel: bin/widgets/wheel/app.js
 widgets/polls: bin/widgets/polls/app.js
