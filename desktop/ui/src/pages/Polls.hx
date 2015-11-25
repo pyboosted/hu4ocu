@@ -8,13 +8,7 @@ class Polls {
   public function view() return Layout.around(
     m('.page', [
       m('.lightblock', [
-        m('.small-header', 'Preview'),
-        m('ul.items-list', [
-          m('iframe[src="http://127.0.0.1:8080/polls/index.html"][frameBorder="0"][style="width: 100%; height: 100px;"]')
-        ])
-      ]),
-      m('.lightblock', [
-        m('.small-header', 'Settings'),
+        m('.small-header', 'Polls'),
         m('ul.items-list', [
           m('li.row', [
             m('.col[style="width:50%;"]', [
@@ -28,13 +22,32 @@ class Polls {
               m('input[type="text"][placeholder="Team 2"][value="Team 2"]'),
               m('.label', 'Key 2'),
               m('input[type="text"][placeholder="Key 2"][value="2"]')
+            ]),
+            m('.col.pad-top', m('button', 'Save'))
+          ]),
+          m('li.row', [
+            m('.col[style="width:50%;"]', [
+              m('button', 'Run')
+            ]),
+            m('.col[style="width:50%;"]', [
+              m('button', 'Show')
             ])
           ]),
-          m('li', [
-            m('button', 'Запустить')
+          m('li.row', [
+            m('.col[style="width:50%;"]', m('.votes-count', 23)),
+            m('.col[style="width:50%;"]', m('.votes-count', 15)),
+          ]),
+          m('li.row', [
+            m('.col[style="width:50%;"]', m('.parts', [
+              m('textarea[rows="5"]')
+            ])),
+            m('.col[style="width:50%;"]', m('.parts', [
+              m('textarea[rows="5"]')
+            ])),
+            m('.col', m('button', 'Reset'))
           ])
         ])
-      ])
+      ]),
     ])
   );
 }

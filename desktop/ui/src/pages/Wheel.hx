@@ -10,6 +10,7 @@ class Wheel {
       m('.small-header', 'Wheel'),
       m('ul.items-list', [
         m('li', [
+          m('.label', 'Participants'),
           m('textarea[style="height: 200px"]')
         ]),
         m('li', [
