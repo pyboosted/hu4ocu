@@ -36,7 +36,7 @@ bin/utils/rutony-mock.js:
 	haxe 	-js bin/utils/rutony-mock.js -main RutonyMock \
 				-cp utils/rutony-mock/src $(SHARED) $(LIB-ASYNC) $(LIB-NODE) $(LIB-TOML) $(LIB-WS)
 run: all
-	electron .
+	./node_modules/.bin/electron .
 
 clean: clean/desktop clean/widgets clean/utils
 clean/desktop:
