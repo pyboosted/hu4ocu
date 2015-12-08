@@ -5,5 +5,11 @@
   "dependencies": {
     "ws": "latest",
     "node-static": "latest"
+  },
+  "scripts": {
+    "app": "./node_modules/.bin/electron ."
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^0.35.4"
   }
 }

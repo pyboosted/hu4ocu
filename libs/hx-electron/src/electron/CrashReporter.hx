@@ -1,6 +1,6 @@
 package electron;
 
-@:jsRequire('crash-reporter')
+@:jsRequire('electron', 'crashReporter')
 extern class CrashReporter {
   public static function start():Void;
 }

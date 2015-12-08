@@ -9,7 +9,7 @@ class UI {
 
   var window: BrowserWindow;
   var renderer: Dynamic;
-
+  var APP_HEIGHT: Int = 617;
   public function new() {
 
     CrashReporter.start();
@@ -22,14 +22,14 @@ class UI {
       window = new BrowserWindow({ 
         width: 420, 
         'min-width': 420, 
-        'min-height': 597,
-        'max-height': 597, 
-        height: 597, 
+        'min-height': APP_HEIGHT,
+        'max-height': APP_HEIGHT, 
+        height: APP_HEIGHT, 
         frame: false, 
         show: false,
         icon: untyped __js__('__dirname') +  '/icon.png'
       });
-      window.loadUrl('file://' + untyped __js__('__dirname') + '/html/index.html');
+      window.loadURL('file://' + untyped __js__('__dirname') + '/html/index.html');
       haxe.Timer.delay(function(){
         untyped window.show();
       }, 1000);
@@ -52,20 +52,16 @@ class UI {
     });
   }
 
-  public function send(event: String, data: Dynamic):Void {
-    IPC.send(event, data);
-  }
-
-  // server only
   public function when(event: String, fn:Dynamic->Dynamic) {
     IPC.on(event, function (event, args) {
       event.returnValue = fn(args);
     });
   }
 
-  // client only
-  public function call(event: String, data: Dynamic):Dynamic {
-    return IPC.sendSync(event, data);
-  };
+  public function notify(event: String, data: Dynamic) {
+    if (window != null) {
+      window.winContents.send(event, data);
+    }
+  }
 
 }

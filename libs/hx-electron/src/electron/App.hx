@@ -1,6 +1,6 @@
 package electron;
 
-@:jsRequire('app')
+@:jsRequire('electron', 'app')
 extern class App {
 
   public static function on(eventName: String, handler: Void->Void):Void;
