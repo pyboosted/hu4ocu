@@ -17,26 +17,20 @@ Hu4ocu is built with [Electron](https://github.com/atom/electron)(ex. atom-shell
 
 2. Install [Haxe](https://github.com/HaxeFoundation/haxe).
 
-3. Install [Electron](https://github.com/atom/electron).
-
-    ```
-    npm install -g electron
-    ```
-
-4. Install npm modules.
+3. Install npm modules.
 
     ```
     npm install
     ```
 
-5. Make the application.
+4. Make the application.
 
     ```
     make all
     ```
 
-6. Run.
+5. Run.
 
     ```
-    make run
+    npm run app
     ```
