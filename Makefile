@@ -3,6 +3,8 @@ LIB-NODE = -cp libs/hx-node/src
 LIB-TOML = -cp libs/haxetoml/src
 LIB-MITHRIL = -cp libs/hx-mithril-simple/src
 LIB-WS = -cp libs/hx-ws/src
+LIB-CASPER = -cp libs/hx-casperjs/src
+LIB-MSGPACK = -cp libs/hx-msgpack/src
 LIB-ELECTRON = -cp libs/hx-electron/src
 LIB-NODESTATIC = -cp libs/hx-nodestatic/src
 
@@ -31,10 +33,13 @@ bin/widgets/wheel/app.js:
 bin/widgets/polls/app.js:
 	touch bin/widgets/polls/app.js
 
-utils: bin/utils/rutony-mock.js
+utils: bin/utils/rutony-mock.js bin/utils/yt-parser.js
 bin/utils/rutony-mock.js:
 	haxe 	-js bin/utils/rutony-mock.js -main RutonyMock \
 				-cp utils/rutony-mock/src $(SHARED) $(LIB-ASYNC) $(LIB-NODE) $(LIB-TOML) $(LIB-WS)
+bin/utils/yt-parser.js:
+	haxe 	-js bin/utils/yt-parser.js -main YtParser \
+				-cp utils/yt-parser/src $(SHARED) $(LIB-ASYNC) $(LIB-NODE) $(LIB-MSGPACK) $(LIB-CASPER)
 run: all
 	./node_modules/.bin/electron .
 
@@ -47,5 +52,6 @@ clean/widgets:
 	-rm bin/widgets/polls/app.js
 clean/utils:
 	-rm bin/utils/rutony-mock.js
+	-rm bin/utils/yt-parser.js
 
 .PHONY: all clean clean/desktop clean/widgets clean/utils desktop desktop/ui desktop/app widgets widgets/wheel widgets/polls utils
