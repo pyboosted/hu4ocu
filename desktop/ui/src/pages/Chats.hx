@@ -58,13 +58,13 @@ class Chats {
           ]);
       }
     ]),
-    wrapChat({ title: 'Twitch', disabled: true }, [
+    wrapChat({ title: 'Twitch', disabled: false }, [
       m('.row', [
         m('.col[style="width:70%"]', m('input[type="text"][placeholder="Channel"]')),
         m('.col[style="width:30%"]', m('button', 'Connect'))
       ])
     ]),
-    wrapChat({ title: 'Goodgame', disabled: true }, [
+    wrapChat({ title: 'Goodgame', disabled: false }, [
       m('.row', [
         m('.col[style="width:70%"]', m('input[type="text"][placeholder="Channel"]')),
         m('.col[style="width:30%"]', m('button', 'Connect'))

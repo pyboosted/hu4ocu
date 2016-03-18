@@ -15,7 +15,7 @@ class RutonyChatProvider extends ChatProvider {
     super();
   }
 
-  public override function connect() {
+  public override function connect(_) {
     setStatus(ChatProviderStatus.Pending);
     try {
       socket = new WebSocket(host);

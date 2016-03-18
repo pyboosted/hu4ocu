@@ -1,9 +1,9 @@
 package chats;
 
-enum MessageSource {
-  Youtube;
-  Twitch;
-  Goodgame;
+@:enum abstract MessageSource(String) {
+  var Youtube = 'youtube';
+  var Twitch = 'twitch';
+  var Goodgame = 'goodgame';
 }
 
 typedef Message = {

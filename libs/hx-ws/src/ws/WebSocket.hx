@@ -8,5 +8,6 @@ extern class WebSocket {
   
   public function new(clientConfig: ClientConfig):Void;
   public function on(eventName: String, handler: Dynamic->Void):Void;
+  public function send(message: Dynamic):Void;
   public function close():Void;
 }

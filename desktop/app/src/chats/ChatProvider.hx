@@ -3,6 +3,7 @@ package chats;
 import chats.ChatProviderStatus;
 
 class ChatProvider {
+
   private var status: ChatProviderStatus = ChatProviderStatus.Disconnected;
   private var messageListeners: Array<Message->Void> = [];
   private var attempsLeft = 2;
@@ -20,7 +21,7 @@ class ChatProvider {
     }
   }
 
-  public function connect() {
+  public function connect(_) {
     throw "Not implemented";
   }
   public function disconnect() {
@@ -56,7 +57,7 @@ class ChatProvider {
     if (attempsLeft > 0) {
       setStatus(ChatProviderStatus.Pending);
       attempsLeft--;
-      haxe.Timer.delay(function () connect(), 3000);
+      haxe.Timer.delay(function () connect(null), 3000);
     } else {
       setStatus(ChatProviderStatus.Disconnected);
     }
