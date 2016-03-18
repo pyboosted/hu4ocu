@@ -32,7 +32,9 @@ typedef PollsConfig = {
 class Polls extends Service {
 
   var config: PollsConfig;
+
   public function new(app) {
+
     super(app);
 
     config = {
@@ -111,6 +113,7 @@ class Polls extends Service {
           username: username,
           config: config
         }));
+        app.ui.notify('polls.vote', { key: key, user: username, source: message.source });
         trace(config);
       }
     });
@@ -128,6 +131,7 @@ class Polls extends Service {
   }
 
   function broadcast(action: String) {
+    trace('broadcast', action);
     app.socketServer.broadcast(haxe.Json.stringify({
       action: action,
       key: null,

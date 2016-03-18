@@ -1,5 +1,3 @@
-package ;
-
 // ====== CHATS =======
 
 @:enum abstract ChatProviders(String) {
@@ -10,7 +8,7 @@ package ;
   var Sc2tv = 'sc2tv';
 }
 
-@:enum abstract ChatProvderStatuses(String) {
+@:enum abstract ChatProviderStatuses(String) {
   var Connected = 'connected';
   var Pending = 'pending';
   var Disconnected = 'disconnected';
@@ -74,7 +72,7 @@ typedef PollsConfig = {
 }
 
 typedef WheelConfig = {
-  status: WheelStatus,
+  status: WheelStatuses,
   list: Array<String>,
   winner: Int
 };

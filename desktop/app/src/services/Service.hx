@@ -2,8 +2,8 @@ package services;
 
 class Service {
 
-  var app: Server;
-  public function new(app: Server) {
+  var app: App;
+  public function new(app: App) {
     this.app = app;
   }
 

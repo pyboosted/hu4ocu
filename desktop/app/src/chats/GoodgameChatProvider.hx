@@ -9,7 +9,6 @@ class GoodgameChatProvider extends ChatProvider {
 
   static var NICK:String = 'pyboosted';
   static var AUTH:String = 'oauth:qyejmtwbyc2y1qtm0wx1grjdneaibk';
-
   var socket: WebSocket;
   var host: String;
   var channel: String;
@@ -19,7 +18,7 @@ class GoodgameChatProvider extends ChatProvider {
   }
 
   public override function connect(channel) {
-    
+    tryReconnect = true;
     this.channel = channel;
 
     setStatus(ChatProviderStatus.Pending);
@@ -34,12 +33,12 @@ class GoodgameChatProvider extends ChatProvider {
     }
   }
 
-  public override function onConnect(channel:String) {
+  public override function onConnect(_) {
 
     var connectionMessage:Dynamic = {
       type: "join",
       data: {
-        channel_id: 1542, // идентификатор канала
+        channel_id: Std.parseInt(channel), // идентификатор канала
         hidden: false   // для модераторов: не показывать ник в списке юзеров
       }
     };
@@ -50,6 +49,7 @@ class GoodgameChatProvider extends ChatProvider {
   }
 
   public override function disconnect() {
+    tryReconnect = false;
     channel = null;
     socket.close();
     socket = null;

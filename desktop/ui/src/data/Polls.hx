@@ -1,11 +1,14 @@
 package data;
 
-class Polls {
+import Formats;
+
+class Polls implements async.Build {
   var config:PollsConfig;
   public function new() {
 
     config = {
       status: PollsStatuses.NotRunning,
+      visual: PollsVisuals.Hidden,
       q1: 'Team 1', q2: 'Team 2',
       key1: '1', key2: '2',
       votes1: [], votes2: []
@@ -17,47 +20,61 @@ class Polls {
         config.votes1.push(voter);
       }
       if (vote.key == config.key2) {
-       config.votes1.push(voter); 
+       config.votes2.push(voter); 
       }
+
+      UI.update();
     });
   }
 
-  @async public function update(_config: PollsConfig):Void {
-    [] = API.getAsync('polls.update', config);
+  @async public function update(_config: Dynamic):Void {
+
+    [_] = API.async('polls.set', config);
 
     config.q1 = _config.q1;
     config.q2 = _config.q2;
     config.key1 = _config.key1;
     config.key2 = _config.key2;
+
+    UI.update();
   }
 
   @async public function start():Void {
-    [] = API.getAsync('polls.start');
+    [_] = API.async('polls.start', null);
     config.status = PollsStatuses.Running;
+    UI.update();
+    trace('started');
   }
 
   @async public function stop():Void {
-    [] = API.getAsync('polls.stop');
+    [_] = API.async('polls.stop', null);
     config.status = PollsStatuses.Stopped; 
+    UI.update();
+    trace('stopped');
   }
 
   @async public function show():Void {
-    [] = API.getAsync('polls.show');
+    [_] = API.async('polls.show', null);
     config.visual = PollsVisuals.Visible;
+    UI.update();
+    trace('showed');
   }
 
   @async public function hide():Void {
-    [] = API.getAsync('polls.hide');
+    [_] = API.async('polls.hide', null);
     config.visual = PollsVisuals.Hidden; 
+    UI.update();
   }
 
   @async public function reset():Void {
     config = {
       status: PollsStatuses.NotRunning,
+      visual: PollsVisuals.Hidden,
       q1: 'Team 1', q2: 'Team 2',
       key1: '1', key2: '2',
       votes1: [], votes2: []
     };
+    UI.update();
   }
 
   public function get():PollsConfig {

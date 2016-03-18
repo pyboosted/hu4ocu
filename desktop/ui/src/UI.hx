@@ -16,7 +16,11 @@ import pages.About;
     }
   }
 
+  public static var chats = new data.Chats();
+  public static var polls = new data.Polls();
+
   static function run() {
+
 
     untyped {
       history.pushState = function () {};
@@ -32,4 +36,7 @@ import pages.About;
     setRoute('/chats');
   }
   public static function main() {}
+  public static function update() {
+    redraw();
+  }
 }

@@ -1,37 +1,59 @@
 package data;
 
-@async class Chats {
+import Formats;
 
-  var providers: Map<String, ChatProviderStatuses>;
+typedef ChatProviderStatus = {
+  status: ChatProviderStatuses,
+  channel: String
+};
+
+class Chats {
+
+  public var providers: Map<String, ChatProviderStatus>;
   public function new() {
-    providers = new Map<String, ChatProviderStatuses>();
 
-    for(prop in Type.allEnums(ChatProviders)) {
-      providers[prop] = ChatProviderStatuses.Disconnected;
+    var chats = ['goodgame', 'twitch'];
+
+    providers = new Map<String, ChatProviderStatus>();
+
+    for(prop in chats) {
+      providers.set(cast prop, {
+        status: ChatProviderStatuses.Disconnected,
+        channel: null
+      });
     }
 
-    API.on('chat.disconnected', function (provider: ChatProviders) {
-      providers[provider] = ChatProviderStatuses.Disconnected;
+
+    API.on('chat.disconnected', function (data) {
+      trace('chat.disconnected', data);
+      providers.get(data.provider).status = ChatProviderStatuses.Disconnected;
+      providers.get(data.provider).channel = null;
+      UI.update();
+      return null;
+    });
+
+    API.on('chat.connected', function (data) {
+      trace('chat.connected', data);
+      providers.get(data.provider).status = ChatProviderStatuses.Connected;
+      // providers.get(data.provider).channel = data.channel;
+      UI.update();
+      return null;
     });
   }
 
-  @async public function connect(provider: ChatProviders):Void {
-    providers[provider] = ChatProviderStatuses.Pending;
-    [var result] = API.getAsync('chat.connect', provider);
-    providers[provider] = result;
-
-    return result;
+  public function connect(provider: String, channel: String):Void {
+    providers.get(provider).status = ChatProviderStatuses.Pending;
+    providers.get(provider).channel = channel;
+    API.get('chat.connect', { provider: provider, channel: channel });
   }
 
-  @async public function disconnect(provider: ChatProviders):Void {
-    providers[provider] = ChatProviderStatuses.Pending;
-    [var result] = API.getAsync('chat.disconnect', provider);
-    providers[provider] = result;
-    return result;
+  public function disconnect(provider: String):Void {
+    providers.get(provider).status = ChatProviderStatuses.Pending;
+    API.get('chat.disconnect', { provider: provider });
   }
 
-  public function getStatus(provider: ChatProviders):ChatProviderStatuses {
-    return providers[provider];
+  public function getStatus(provider: String):ChatProviderStatus {
+    return providers.get(provider);
   }
 
 }

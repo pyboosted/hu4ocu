@@ -33,7 +33,7 @@ class UI {
       haxe.Timer.delay(function(){
         untyped window.show();
       }, 1000);
-      // window.openDevTools();
+      window.openDevTools();
       window.on('closed', function () {
         window = null;
       });
@@ -55,12 +55,18 @@ class UI {
   public function when(event: String, fn:Dynamic->Dynamic) {
     IPC.on(event, function (event, args) {
       event.returnValue = fn(args);
+      if (args != null && args.counter != null) {
+        var res:Dynamic = event.returnValue;
+        if (res == null) res = {};
+        res.counter = args.counter;
+        notify('response', res);
+      }
     });
   }
 
   public function notify(event: String, data: Dynamic) {
-    if (window != null) {
-      window.winContents.send(event, data);
+    if (window != null && window.webContents != null) {
+      window.webContents.send(event, data);
     }
   }
 

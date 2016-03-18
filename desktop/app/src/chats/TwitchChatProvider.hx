@@ -19,7 +19,7 @@ class TwitchChatProvider extends ChatProvider {
   }
 
   public override function connect(channel) {
-    
+    tryReconnect = true;
     this.channel = channel;
 
     setStatus(ChatProviderStatus.Pending);
@@ -43,6 +43,7 @@ class TwitchChatProvider extends ChatProvider {
   }
 
   public override function disconnect() {
+    tryReconnect = false;
     channel = null;
     socket.close();
     socket = null;

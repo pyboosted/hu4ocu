@@ -7,6 +7,7 @@ class ChatProvider {
   private var status: ChatProviderStatus = ChatProviderStatus.Disconnected;
   private var messageListeners: Array<Message->Void> = [];
   private var attempsLeft = 2;
+  var tryReconnect:Bool = true;
   public function new() {
 
   }
@@ -54,7 +55,7 @@ class ChatProvider {
   }
 
   private function onDisconnect(_) {
-    if (attempsLeft > 0) {
+    if (attempsLeft > 0 && tryReconnect) {
       setStatus(ChatProviderStatus.Pending);
       attempsLeft--;
       haxe.Timer.delay(function () connect(null), 3000);

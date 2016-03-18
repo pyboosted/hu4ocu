@@ -2,6 +2,11 @@ package pages;
 
 import Mithril.*;
 import layout.Layout;
+import services.Validator;
+
+import Formats;
+
+using Lambda;
 
 typedef ChatConfig = {
   title: String,
@@ -16,8 +21,29 @@ enum ChatStatus {
 }
 
 class Chats {
-  var chats = ['Rutony', 'Twitch', 'Goodgame', 'Youtube', 'sc2tv'];
-  public function new(_) {}
+  
+  var chatProviders: Map<String, Dynamic>;
+  var chats = ['twitch', 'goodgame'];
+  var validator: Validator;
+  public function new(_) {
+
+    validator = new Validator([
+      'channel' => [Required, Type(Text)]
+    ]);
+
+    chatProviders = new Map<String, Dynamic>();
+    chatProviders.set('twitch', {
+      title: 'Twitch',
+      placeholder: 'Channel name',
+      input: null
+    });
+    chatProviders.set('goodgame', {
+      title: 'Goodgame',
+      placeholder: 'Channel id',
+      input: null
+    });
+
+  }
 
   function wrapChat(chat:ChatConfig, ?content = null) {
     return m('.lightblock' + (chat.disabled ? '.disabled' : ''), [
@@ -29,52 +55,44 @@ class Chats {
   }
 
   var status: ChatStatus = NotConnected;
-  public function connect(provider) {
-    status = Connecting;
-    haxe.Timer.delay(function () {
-      status = Connected;
-      redraw();
-    }, 1000);
+  public function connect(provider, channel) {
+    UI.chats.connect(provider, channel);
   }
 
   public function disconnect(provider) {
-    status = NotConnected;
+    UI.chats.disconnect(provider);
   }
 
-  public function view() return Layout.around([
-    wrapChat({ title: 'Rutony', active: (status == Connected), disabled: false }, [
+  public function view() return Layout.around(chats.map(function (chat) {
+    
+    var title = chatProviders.get(chat).title;
+    var placeholder = chatProviders.get(chat).placeholder;
+    var status:ChatProviderStatuses = UI.chats.providers.get(chat).status;
+    var currentChannel = UI.chats.providers.get(chat).channel;
+    if (currentChannel == null) currentChannel = '';
+    var channel = '';
+
+    return wrapChat({ title: title, active: (status == Connected), disabled: false }, [
       switch(status) { 
-        case Connecting:
-          m('.status', 'Connecting...');
-        case Connected:
+        case ChatProviderStatuses.Pending:
+          m('.status', 'Connecting to $currentChannel...');
+        case ChatProviderStatuses.Connected:
           m('.row', [
-            m('.col[style="width:70%"]', m('.status', 'Connected')),
-            m('.col[style="width:30%"]', m('button.btn-dark', { onclick: function () disconnect('rutony') }, 'Disconnect'))
+            m('.col[style="width:70%"]', m('.status', 'Connected to $currentChannel')),
+            m('.col[style="width:30%"]', m('button.btn-dark', { onclick: function () disconnect(chat) }, 'Disconnect'))
           ]);
-        case NotConnected:
+        case ChatProviderStatuses.Disconnected:
           m('.row', [
-            m('.col[style="width:70%"]', m('input[type="text"][placeholder="URL"][value="http://127.0.0.1:8383/Echo"]')),
-            m('.col[style="width:30%"]', m('button', { onclick: function () connect('rutony') }, 'Connect'))
+            m('.col[style="width:70%"]', m('input[type="text"][placeholder="$placeholder"][value=""]', {
+              config: function (el, _) {
+                el.oninput = function () {
+                  channel = el.value;
+                };
+              }
+            })),
+            m('.col[style="width:30%"]', m('button', { onclick: function () connect(chat, channel) }, 'Connect'))
           ]);
       }
-    ]),
-    wrapChat({ title: 'Twitch', disabled: false }, [
-      m('.row', [
-        m('.col[style="width:70%"]', m('input[type="text"][placeholder="Channel"]')),
-        m('.col[style="width:30%"]', m('button', 'Connect'))
-      ])
-    ]),
-    wrapChat({ title: 'Goodgame', disabled: false }, [
-      m('.row', [
-        m('.col[style="width:70%"]', m('input[type="text"][placeholder="Channel"]')),
-        m('.col[style="width:30%"]', m('button', 'Connect'))
-      ])
-    ]),
-    wrapChat({ title: 'Youtube', disabled: true }, [
-      m('.row', [
-        m('.col[style="width:70%"]', m('input[type="text"][placeholder="Channel"]')),
-        m('.col[style="width:30%"]', m('button', 'Connect'))
-      ])
-    ])
-  ]);
+    ]);
+  }));
 }

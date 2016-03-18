@@ -7,12 +7,19 @@ import ws.Server as SocketServer;
 import chats.Chats;
 import chats.ChatProviders;
 
+import services.Polls;
+
 class App {
 
-  var socketServer: SocketServer;
-  var staticServer: StaticServer;
-  var ui: UI;
+  public var socketServer: SocketServer;
+  public var staticServer: StaticServer;
 
+
+  public var ui: UI;
+
+  public var chats: Chats;
+  public var polls: Polls;
+  
   private function isWindows():Bool {
     return (untyped process.platform == 'win32');
   }
@@ -26,14 +33,13 @@ class App {
     socketServer = new SocketServer({ port: 8081 });
     staticServer = new StaticServer({ path: staticPath, port: 8080 });
 
-    var chats = new Chats(this);
-
-    chats.get(ChatProviders.Twitch).connect('squierpsn');
-    chats.get(ChatProviders.Goodgame).connect('1542');
-
+    chats = new Chats(this);
     chats.onMessage(function (message) {
       trace(message);
     });
+
+    polls = new Polls(this);
+
   }
 
   public static function main() {
