@@ -21,6 +21,7 @@ class UI {
     App.on('ready', function () {
       window = new BrowserWindow({ 
         width: 420, 
+        // width: 800,
         'min-width': 420, 
         'min-height': APP_HEIGHT,
         'max-height': APP_HEIGHT, 

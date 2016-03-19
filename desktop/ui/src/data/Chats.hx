@@ -13,7 +13,7 @@ class Chats {
   public var messages: Array<ChatMessage>;
   public function new() {
 
-    var chats = ['goodgame', 'twitch'];
+    var chats = ['goodgame', 'twitch', 'youtube'];
 
     providers = new Map<String, ChatProviderStatus>();
     messages = new Array<ChatMessage>();

@@ -18,6 +18,7 @@ class YtParser {
         name: nickname,
         text: comment
       });
+      el.remove();
     }
 
     return comments;
@@ -37,13 +38,32 @@ class YtParser {
       }
     });
 
-    var url = 'https://www.youtube.com/live_chat?v=N6UbZyvj9Xo&dark_theme=1&from_gaming=1&client_version=1.2';
+    var channel = '';
+    untyped {
+      var system = require('system');
+      var args = system.args;
+      channel = args[1];
+    }
+
+    var url = 'https://www.youtube.com/live_chat?v=$channel&dark_theme=1&from_gaming=1&client_version=1.2';
     
+
     phantom.open(url, function () {
-      var comments:Array<Dynamic> = phantom.evaluate(getComments);
-      for (comment in comments) {
-        trace('[${comment.name.trim()}]: ${comment.text.trim()}');
-      }
+
+      var timer = new haxe.Timer(1000);
+      var firstTick = true;
+      timer.run = function () {
+        var comments:Array<Dynamic> = phantom.evaluate(getComments);
+        if (firstTick) {
+          trace('ready');
+          firstTick = false;
+          return;
+        }
+        for (comment in comments) {
+          trace('${comment.name.trim()}|||${comment.text.trim()}');
+        }  
+      };
+      
     });
     
     

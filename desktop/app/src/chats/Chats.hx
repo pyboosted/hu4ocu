@@ -37,9 +37,16 @@ class Chats {
       notifyStatusChanged(ChatProviders.Goodgame, status);
     });
 
+    var youtubeChatProvider = new YoutubeChatProvider(null);
+    youtubeChatProvider.onMessage(notifyListeners);
+    youtubeChatProvider.onStatusChanged(function (status) {
+      notifyStatusChanged(ChatProviders.Youtube, status);
+    });
+
     chatProviders.set(cast ChatProviders.Rutony, rutonyChatProvider);
     chatProviders.set(cast ChatProviders.Twitch, twitchChatProvider);
     chatProviders.set(cast ChatProviders.Goodgame, goodgameChatProvider);
+    chatProviders.set(cast ChatProviders.Youtube, youtubeChatProvider);
 
     app.ui.when('chat.connect', function (data) {
       trace('chat.connect', data);

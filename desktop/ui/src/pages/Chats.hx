@@ -23,7 +23,7 @@ enum ChatStatus {
 class Chats {
   
   var chatProviders: Map<String, Dynamic>;
-  var chats = ['twitch', 'goodgame'];
+  var chats = ['twitch', 'goodgame', 'youtube'];
   var validator: Validator;
   var messages: Array<ChatMessage>;
   public function new(_) {
@@ -40,6 +40,11 @@ class Chats {
     });
     chatProviders.set('goodgame', {
       title: 'Goodgame',
+      placeholder: 'Channel id',
+      input: null
+    });
+    chatProviders.set('youtube', {
+      title: 'Youtube',
       placeholder: 'Channel id',
       input: null
     });
