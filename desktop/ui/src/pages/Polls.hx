@@ -3,13 +3,17 @@ package pages;
 import Mithril.*;
 import layout.Layout;
 
+import Formats;
+
 using Lambda;
 
 class Polls {
   
+  var config: PollsConfig;
+  var localConfig: Dynamic;
   public function new(_) {
 
-
+    
 
   }
 
@@ -45,16 +49,14 @@ class Polls {
 
   public function view() {
     
-    var config = UI.polls.get();
-    var localConfig = {
+    config = UI.polls.get();
+    localConfig = {
       q1: config.q1,
       q2: config.q2,
       key1: config.key1,
       key2: config.key2      
     };
-
-    trace(config);
-
+    
     return Layout.around(
       m('.page', [
         m('.lightblock', [

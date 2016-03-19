@@ -1,11 +1,11 @@
 package chats;
 
-import chats.ChatProviderStatus;
+import Formats;
 
 class ChatProvider {
 
-  private var status: ChatProviderStatus = ChatProviderStatus.Disconnected;
-  private var messageListeners: Array<Message->Void> = [];
+  private var status: ChatProviderStatuses = ChatProviderStatuses.Disconnected;
+  private var messageListeners: Array<ChatMessage->Void> = [];
   private var attempsLeft = 2;
   var tryReconnect:Bool = true;
   public function new() {
@@ -15,7 +15,7 @@ class ChatProvider {
   public function getStatus() {
     return status;
   }
-  public function setStatus(status: ChatProviderStatus) {
+  public function setStatus(status: ChatProviderStatuses) {
     if (this.status != status) {
       this.status = status;
       notifyStatusChanged(status);
@@ -28,8 +28,8 @@ class ChatProvider {
   public function disconnect() {
     throw "Not implemented";
   }
-  var statusListeners: Array<ChatProviderStatus->Void> = [];
-  public function onStatusChanged(fn: ChatProviderStatus->Void) {
+  var statusListeners: Array<ChatProviderStatuses->Void> = [];
+  public function onStatusChanged(fn: ChatProviderStatuses->Void) {
     statusListeners.push(fn);
   }
 
@@ -40,27 +40,27 @@ class ChatProvider {
   }
 
   
-  public function onMessage(fn: Message->Void) {
+  public function onMessage(fn: ChatMessage->Void) {
     messageListeners.push(fn);
   }
 
-  public function notifyListeners(message: Message) {
+  public function notifyListeners(message: ChatMessage) {
     for (listener in messageListeners) {
       listener(message);
     }
   }
 
   private function onConnect(_) {
-    setStatus(ChatProviderStatus.Connected);
+    setStatus(ChatProviderStatuses.Connected);
   }
 
   private function onDisconnect(_) {
     if (attempsLeft > 0 && tryReconnect) {
-      setStatus(ChatProviderStatus.Pending);
+      setStatus(ChatProviderStatuses.Pending);
       attempsLeft--;
       haxe.Timer.delay(function () connect(null), 3000);
     } else {
-      setStatus(ChatProviderStatus.Disconnected);
+      setStatus(ChatProviderStatuses.Disconnected);
     }
   }
 

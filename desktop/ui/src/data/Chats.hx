@@ -10,11 +10,13 @@ typedef ChatProviderStatus = {
 class Chats {
 
   public var providers: Map<String, ChatProviderStatus>;
+  public var messages: Array<ChatMessage>;
   public function new() {
 
     var chats = ['goodgame', 'twitch'];
 
     providers = new Map<String, ChatProviderStatus>();
+    messages = new Array<ChatMessage>();
 
     for(prop in chats) {
       providers.set(cast prop, {
@@ -39,6 +41,12 @@ class Chats {
       UI.update();
       return null;
     });
+
+    API.on('chat.message', function (message) {
+      messages.push(message);
+      UI.update();
+      return null;
+    });
   }
 
   public function connect(provider: String, channel: String):Void {
@@ -54,6 +62,10 @@ class Chats {
 
   public function getStatus(provider: String):ChatProviderStatus {
     return providers.get(provider);
+  }
+
+  public function getMessages():Array<ChatMessage> {
+    return messages;
   }
 
 }

@@ -10,8 +10,6 @@
     "app": "./node_modules/.bin/electron ."
   },
   "devDependencies": {
-    "electron-prebuilt": "^0.35.4",
-    "casperjs": "latest",
-    "msgpack": "latest"
+    "electron-prebuilt": "^0.37.2"
   }
 }

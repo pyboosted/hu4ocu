@@ -1,9 +1,9 @@
 package chats;
 
 import ws.WebSocket;
-import chats.Message;
 import chats.ChatProvider;
-import chats.ChatProviderStatus;
+
+import Formats;
 
 class RutonyChatProvider extends ChatProvider {
 
@@ -16,7 +16,7 @@ class RutonyChatProvider extends ChatProvider {
   }
 
   public override function connect(_) {
-    setStatus(ChatProviderStatus.Pending);
+    setStatus(ChatProviderStatuses.Pending);
     try {
       socket = new WebSocket(host);
       socket.on('message', this.processMessage);
@@ -31,12 +31,12 @@ class RutonyChatProvider extends ChatProvider {
   public override function disconnect() {
     socket.close();
     socket = null;
-    setStatus(ChatProviderStatus.Disconnected);
+    setStatus(ChatProviderStatuses.Disconnected);
   } 
 
   function processMessage(data: Dynamic):Void {
     var obj = haxe.Json.parse(data);
-    var message:Message = {
+    var message:ChatMessage = {
       source: obj.site_str,
       username: obj.user,
       text: obj.text

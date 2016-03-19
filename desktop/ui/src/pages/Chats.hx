@@ -25,6 +25,7 @@ class Chats {
   var chatProviders: Map<String, Dynamic>;
   var chats = ['twitch', 'goodgame'];
   var validator: Validator;
+  var messages: Array<ChatMessage>;
   public function new(_) {
 
     validator = new Validator([
@@ -42,6 +43,8 @@ class Chats {
       placeholder: 'Channel id',
       input: null
     });
+
+    messages = UI.chats.getMessages();
 
   }
 
@@ -63,36 +66,45 @@ class Chats {
     UI.chats.disconnect(provider);
   }
 
-  public function view() return Layout.around(chats.map(function (chat) {
-    
-    var title = chatProviders.get(chat).title;
-    var placeholder = chatProviders.get(chat).placeholder;
-    var status:ChatProviderStatuses = UI.chats.providers.get(chat).status;
-    var currentChannel = UI.chats.providers.get(chat).channel;
-    if (currentChannel == null) currentChannel = '';
-    var channel = '';
+  public function view() return Layout.around(
+    m('.chats', [ 
+      m('.controls', chats.map(function (chat) {
 
-    return wrapChat({ title: title, active: (status == Connected), disabled: false }, [
-      switch(status) { 
-        case ChatProviderStatuses.Pending:
-          m('.status', 'Connecting to $currentChannel...');
-        case ChatProviderStatuses.Connected:
-          m('.row', [
-            m('.col[style="width:70%"]', m('.status', 'Connected to $currentChannel')),
-            m('.col[style="width:30%"]', m('button.btn-dark', { onclick: function () disconnect(chat) }, 'Disconnect'))
-          ]);
-        case ChatProviderStatuses.Disconnected:
-          m('.row', [
-            m('.col[style="width:70%"]', m('input[type="text"][placeholder="$placeholder"][value=""]', {
-              config: function (el, _) {
-                el.oninput = function () {
-                  channel = el.value;
-                };
-              }
-            })),
-            m('.col[style="width:30%"]', m('button', { onclick: function () connect(chat, channel) }, 'Connect'))
-          ]);
-      }
-    ]);
-  }));
+        var title = chatProviders.get(chat).title;
+        var placeholder = chatProviders.get(chat).placeholder;
+        var status:ChatProviderStatuses = UI.chats.providers.get(chat).status;
+        var currentChannel = UI.chats.providers.get(chat).channel;
+        if (currentChannel == null) currentChannel = '';
+        var channel = '';
+
+        return wrapChat({ title: title, active: (status == Connected), disabled: false }, [
+          switch(status) { 
+            case ChatProviderStatuses.Pending:
+              m('.status', 'Connecting to $currentChannel...');
+            case ChatProviderStatuses.Connected:
+              m('.row', [
+                m('.col[style="width:70%"]', m('.status', 'Connected to $currentChannel')),
+                m('.col[style="width:30%"]', m('button.btn-dark', { onclick: function () disconnect(chat) }, 'Disconnect'))
+              ]);
+            case ChatProviderStatuses.Disconnected:
+              m('.row', [
+                m('.col[style="width:70%"]', m('input[type="text"][placeholder="$placeholder"][value=""]', {
+                  config: function (el, _) {
+                    el.oninput = function () {
+                      channel = el.value;
+                    };
+                  }
+                })),
+                m('.col[style="width:30%"]', m('button', { onclick: function () connect(chat, channel) }, 'Connect'))
+              ]);
+          }
+        ]);
+      })),
+      wrapChat({ title: 'Messages', active: false, disabled: false }, [ 
+        m('.chats-wrapper', messages.map(function (message) {
+          return m('.message', '[${message.source}] ${message.username}: ${message.text}');
+        }))
+      ])
+    ])
+  );
 }

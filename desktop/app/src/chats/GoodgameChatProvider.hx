@@ -1,9 +1,9 @@
 package chats;
 
 import ws.WebSocket;
-import chats.Message;
 import chats.ChatProvider;
-import chats.ChatProviderStatus;
+
+import Formats;
 
 class GoodgameChatProvider extends ChatProvider {
 
@@ -21,7 +21,7 @@ class GoodgameChatProvider extends ChatProvider {
     tryReconnect = true;
     this.channel = channel;
 
-    setStatus(ChatProviderStatus.Pending);
+    setStatus(ChatProviderStatuses.Pending);
     try {
       socket = new WebSocket(host);
       socket.on('message', this.processMessage);
@@ -44,7 +44,7 @@ class GoodgameChatProvider extends ChatProvider {
     };
 
     socket.send(haxe.Json.stringify(connectionMessage));
-    setStatus(ChatProviderStatus.Connected);
+    setStatus(ChatProviderStatuses.Connected);
 
   }
 
@@ -53,7 +53,7 @@ class GoodgameChatProvider extends ChatProvider {
     channel = null;
     socket.close();
     socket = null;
-    setStatus(ChatProviderStatus.Disconnected);
+    setStatus(ChatProviderStatuses.Disconnected);
   } 
 
   function processMessage(data: Dynamic):Void {
@@ -61,8 +61,8 @@ class GoodgameChatProvider extends ChatProvider {
     if (msg.type == 'message') {
       var name = msg.data.user_name;
       var text = msg.data.text;
-      var message:Message = {
-        source: MessageSource.Goodgame,
+      var message:ChatMessage = {
+        source: MessageSources.Goodgame,
         username: name,
         text: text
       };

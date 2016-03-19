@@ -33,7 +33,7 @@ class UI {
       haxe.Timer.delay(function(){
         untyped window.show();
       }, 1000);
-      window.openDevTools();
+      // window.openDevTools();
       window.on('closed', function () {
         window = null;
       });

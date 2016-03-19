@@ -29,7 +29,7 @@ class Polls implements async.Build {
 
   @async public function update(_config: Dynamic):Void {
 
-    [_] = API.async('polls.set', config);
+    [_] = API.async('polls.set', _config);
 
     config.q1 = _config.q1;
     config.q2 = _config.q2;
@@ -43,21 +43,18 @@ class Polls implements async.Build {
     [_] = API.async('polls.start', null);
     config.status = PollsStatuses.Running;
     UI.update();
-    trace('started');
   }
 
   @async public function stop():Void {
     [_] = API.async('polls.stop', null);
     config.status = PollsStatuses.Stopped; 
     UI.update();
-    trace('stopped');
   }
 
   @async public function show():Void {
     [_] = API.async('polls.show', null);
     config.visual = PollsVisuals.Visible;
     UI.update();
-    trace('showed');
   }
 
   @async public function hide():Void {
@@ -67,9 +64,10 @@ class Polls implements async.Build {
   }
 
   @async public function reset():Void {
+    [_] = API.async('polls.reset', null);
     config = {
       status: PollsStatuses.NotRunning,
-      visual: PollsVisuals.Hidden,
+      visual: config.visual,
       q1: 'Team 1', q2: 'Team 2',
       key1: '1', key2: '2',
       votes1: [], votes2: []

@@ -1,9 +1,9 @@
 package chats;
 
 import ws.WebSocket;
-import chats.Message;
 import chats.ChatProvider;
-import chats.ChatProviderStatus;
+
+import Formats;
 
 class TwitchChatProvider extends ChatProvider {
 
@@ -22,16 +22,36 @@ class TwitchChatProvider extends ChatProvider {
     tryReconnect = true;
     this.channel = channel;
 
-    setStatus(ChatProviderStatus.Pending);
-    try {
-      socket = new WebSocket(host);
-      socket.on('message', this.processMessage);
-      socket.on('open', this.onConnect);
-      socket.on('error', this.onDisconnect);
-      socket.on('close', this.onDisconnect);
-    } catch (e:Dynamic) {
-      this.onDisconnect(e);
-    }
+    setStatus(ChatProviderStatuses.Pending);
+
+
+    node.Http.request('http://api.twitch.tv/api/channels/$channel/chat_properties', function (res) {
+      
+      var data = '';
+      res.on('data', function (chunk) {
+        data += chunk;
+      });
+
+      res.on('end', function () {
+        
+        var info = haxe.Json.parse(data);
+        var server = info.web_socket_servers[0];
+
+        trace('Connecting to: $server');
+        try {
+          socket = new WebSocket('ws://$server:80');
+          socket.on('message', this.processMessage);
+          socket.on('open', this.onConnect);
+          socket.on('error', this.onDisconnect);
+          socket.on('close', this.onDisconnect);
+        } catch (e:Dynamic) {
+          this.onDisconnect(e);
+        }
+
+      });
+
+    }).end();
+    
   }
 
   public override function onConnect(_) {
@@ -39,7 +59,7 @@ class TwitchChatProvider extends ChatProvider {
     socket.send('PASS ' + AUTH);
     socket.send('NICK ' + NICK);
     socket.send('JOIN #' + channel);
-    setStatus(ChatProviderStatus.Connected);
+    setStatus(ChatProviderStatuses.Connected);
   }
 
   public override function disconnect() {
@@ -47,16 +67,23 @@ class TwitchChatProvider extends ChatProvider {
     channel = null;
     socket.close();
     socket = null;
-    setStatus(ChatProviderStatus.Disconnected);
+    setStatus(ChatProviderStatuses.Disconnected);
   } 
 
   function processMessage(data: Dynamic):Void {
+
+    if (data.lastIndexOf('PING', 0) == 0) {
+      socket.send('PONG :tmi.twitch.tv');
+      return;
+    }
+
     var r = ~/.*?;display-name=(.*?);.*PRIVMSG #.+?:(.*)$/im;
+    trace(data);
     if (r.match(data)) {
       var name = r.matched(1);
       var msg = r.matched(2);
-      var message:Message = {
-        source: MessageSource.Twitch,
+      var message:ChatMessage = {
+        source: MessageSources.Twitch,
         username: name,
         text: msg
       };

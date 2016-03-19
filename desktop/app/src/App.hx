@@ -5,7 +5,6 @@ import lib.UI;
 import ws.Server as SocketServer;
 
 import chats.Chats;
-import chats.ChatProviders;
 
 import services.Polls;
 
@@ -19,7 +18,7 @@ class App {
 
   public var chats: Chats;
   public var polls: Polls;
-  
+
   private function isWindows():Bool {
     return (untyped process.platform == 'win32');
   }

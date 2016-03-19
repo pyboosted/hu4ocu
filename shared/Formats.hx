@@ -24,8 +24,8 @@
 typedef ChatMessage = {
   source: MessageSources,
   text: String,
-  user: String,
-  link: String
+  username: String,
+  ?link: String
 }
 
 // ====== POLLS =======

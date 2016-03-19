@@ -78,6 +78,7 @@ class Polls extends Service {
     });
 
     app.ui.when('polls.set', function (config) {
+      trace('Polls.set', config);
       this.setConfig(config);
       return this.getConfig();
     });
