@@ -3,14 +3,23 @@ package data;
 import Formats;
 
 class Polls implements async.Build {
+  
   var config:PollsConfig;
+  var storage = js.Browser.getLocalStorage();
+
   public function new() {
+
+    var storageConfig:Dynamic = haxe.Json.parse(storage.getItem('polls'));
+    if (storageConfig == null) storageConfig = {
+      q1: 'Team 1', q2: 'Team 2',
+      key1: '1', key2: '2'
+    };
 
     config = {
       status: PollsStatuses.NotRunning,
       visual: PollsVisuals.Hidden,
-      q1: 'Team 1', q2: 'Team 2',
-      key1: '1', key2: '2',
+      q1: storageConfig.q1, q2: storageConfig.q2,
+      key1: storageConfig.key1, key2: storageConfig.key2,
       votes1: [], votes2: []
     };
 
@@ -35,6 +44,13 @@ class Polls implements async.Build {
     config.q2 = _config.q2;
     config.key1 = _config.key1;
     config.key2 = _config.key2;
+
+    storage.setItem('polls', haxe.Json.stringify({
+      q1: config.q1,
+      q2: config.q2,
+      key1: config.key1,
+      key2: config.key2
+    }));
 
     UI.update();
   }

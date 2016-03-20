@@ -49,12 +49,10 @@ class Chats {
     chatProviders.set(cast ChatProviders.Youtube, youtubeChatProvider);
 
     app.ui.when('chat.connect', function (data) {
-      trace('chat.connect', data);
       chatProviders.get(data.provider).connect(data.channel);
       return null;
     });
     app.ui.when('chat.disconnect', function (data) {
-      trace('chat.disconnect', data);
       chatProviders.get(data.provider).disconnect();
       return null;
     });

@@ -66,21 +66,21 @@ class Polls {
               m('.col[style="width:50%;"]', [
                 m('.label', 'Team 1'),
                 m('input[type="text"][placeholder="Team 1"][value="${localConfig.q1}"]', {
-                  config: onChange(function (v) localConfig.q1 = v)
+                  config: onChange(function (v) config.q1 = localConfig.q1 = v)
                 }),
                 m('.label', 'Key 1'),
                 m('input[type="text"][placeholder="Key 1"][value="${localConfig.key1}"]', {
-                  config: onChange(function (v) localConfig.key1 = v)
+                  config: onChange(function (v) config.key1 = localConfig.key1 = v)
                 })
               ]),
               m('.col[style="width:50%;"]', [
                 m('.label', 'Team 2'),
                 m('input[type="text"][placeholder="Team 2"][value="${localConfig.q2}"]', {
-                  config: onChange(function (v) localConfig.q2 = v)
+                  config: onChange(function (v) config.q2 = localConfig.q2 = v)
                 }),
                 m('.label', 'Key 2'),
                 m('input[type="text"][placeholder="Key 2"][value="${localConfig.key2}"]', {
-                  config: onChange(function (v) localConfig.key2 = v)
+                  config: onChange(function (v) config.key2 = localConfig.key2 = v)
                 })
               ]),
               m('.col.pad-top', m('button', {

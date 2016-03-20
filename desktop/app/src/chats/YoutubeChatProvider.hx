@@ -65,7 +65,6 @@ class YoutubeChatProvider extends ChatProvider {
 
   public override function disconnect() {
     tryReconnect = false;
-    channel = null;
     phantom.kill();
     phantom = null;
     setStatus(ChatProviderStatuses.Disconnected);

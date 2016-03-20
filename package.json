@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "electron-prebuilt": "^0.37.2",
-    "phantomjs-prebuilt": "^2.0.0r"
+    "phantomjs-prebuilt": "^2.0.0"
   }
 }

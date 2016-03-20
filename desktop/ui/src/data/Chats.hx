@@ -11,6 +11,8 @@ class Chats {
 
   public var providers: Map<String, ChatProviderStatus>;
   public var messages: Array<ChatMessage>;
+  var storage = js.Browser.getLocalStorage();
+
   public function new() {
 
     var chats = ['goodgame', 'twitch', 'youtube'];
@@ -18,10 +20,12 @@ class Chats {
     providers = new Map<String, ChatProviderStatus>();
     messages = new Array<ChatMessage>();
 
+    
+
     for(prop in chats) {
       providers.set(cast prop, {
         status: ChatProviderStatuses.Disconnected,
-        channel: null
+        channel: storage.getItem(prop)
       });
     }
 
@@ -29,7 +33,6 @@ class Chats {
     API.on('chat.disconnected', function (data) {
       trace('chat.disconnected', data);
       providers.get(data.provider).status = ChatProviderStatuses.Disconnected;
-      providers.get(data.provider).channel = null;
       UI.update();
       return null;
     });
@@ -37,7 +40,6 @@ class Chats {
     API.on('chat.connected', function (data) {
       trace('chat.connected', data);
       providers.get(data.provider).status = ChatProviderStatuses.Connected;
-      // providers.get(data.provider).channel = data.channel;
       UI.update();
       return null;
     });
@@ -52,6 +54,7 @@ class Chats {
   public function connect(provider: String, channel: String):Void {
     providers.get(provider).status = ChatProviderStatuses.Pending;
     providers.get(provider).channel = channel;
+    storage.setItem(provider, channel);
     API.get('chat.connect', { provider: provider, channel: channel });
   }
 

@@ -64,7 +64,6 @@ class TwitchChatProvider extends ChatProvider {
 
   public override function disconnect() {
     tryReconnect = false;
-    channel = null;
     socket.close();
     socket = null;
     setStatus(ChatProviderStatuses.Disconnected);
@@ -74,6 +73,7 @@ class TwitchChatProvider extends ChatProvider {
 
     if (data.lastIndexOf('PING', 0) == 0) {
       socket.send('PONG :tmi.twitch.tv');
+      trace('PONG Sent\r\n');
       return;
     }
 

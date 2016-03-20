@@ -26,6 +26,12 @@ class Chats {
   var chats = ['twitch', 'goodgame', 'youtube'];
   var validator: Validator;
   var messages: Array<ChatMessage>;
+
+  function toEmpty(str: String) {
+    if (str == null) return '';
+    return str;
+  }
+
   public function new(_) {
 
     validator = new Validator([
@@ -36,17 +42,17 @@ class Chats {
     chatProviders.set('twitch', {
       title: 'Twitch',
       placeholder: 'Channel name',
-      input: null
+      input: toEmpty(UI.chats.providers.get('twitch').channel)
     });
     chatProviders.set('goodgame', {
       title: 'Goodgame',
       placeholder: 'Channel id',
-      input: null
+      input: toEmpty(UI.chats.providers.get('goodgame').channel)
     });
     chatProviders.set('youtube', {
       title: 'Youtube',
       placeholder: 'Channel id',
-      input: null
+      input: toEmpty(UI.chats.providers.get('youtube').channel)
     });
 
     messages = UI.chats.getMessages();
@@ -75,12 +81,14 @@ class Chats {
     m('.chats', [ 
       m('.controls', chats.map(function (chat) {
 
-        var title = chatProviders.get(chat).title;
-        var placeholder = chatProviders.get(chat).placeholder;
+        var chatProvider = chatProviders.get(chat);
+        trace(chat, chatProvider);
+        var title = chatProvider.title;
+        var placeholder = chatProvider.placeholder;
+
         var status:ChatProviderStatuses = UI.chats.providers.get(chat).status;
+
         var currentChannel = UI.chats.providers.get(chat).channel;
-        if (currentChannel == null) currentChannel = '';
-        var channel = '';
 
         return wrapChat({ title: title, active: (status == Connected), disabled: false }, [
           switch(status) { 
@@ -93,14 +101,14 @@ class Chats {
               ]);
             case ChatProviderStatuses.Disconnected:
               m('.row', [
-                m('.col[style="width:70%"]', m('input[type="text"][placeholder="$placeholder"][value=""]', {
+                m('.col[style="width:70%"]', m('input[type="text"][placeholder="$placeholder"][value="${chatProvider.input}"]', {
                   config: function (el, _) {
                     el.oninput = function () {
-                      channel = el.value;
+                      chatProvider.input = el.value;
                     };
                   }
                 })),
-                m('.col[style="width:30%"]', m('button', { onclick: function () connect(chat, channel) }, 'Connect'))
+                m('.col[style="width:30%"]', m('button', { onclick: function () connect(chat, chatProvider.input) }, 'Connect'))
               ]);
           }
         ]);

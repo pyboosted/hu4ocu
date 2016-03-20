@@ -71,7 +71,7 @@ class Wheel {
           m('li', [
             m('.label', 'Participants'),
             m('textarea[style="height: 235px"]', {
-              config: onChange(function (v) localList = v.split('\n'))
+              config: onChange(function (v) config.list = localList = v.split('\n'))
             }, localList.join('\n'))
           ]),
           m('li.row', [

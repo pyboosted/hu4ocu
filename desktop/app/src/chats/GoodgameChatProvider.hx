@@ -12,6 +12,7 @@ class GoodgameChatProvider extends ChatProvider {
   var socket: WebSocket;
   var host: String;
   var channel: String;
+
   public function new(host: String) {
     this.host = host;
     super();
@@ -19,6 +20,7 @@ class GoodgameChatProvider extends ChatProvider {
 
   public override function connect(channel) {
     tryReconnect = true;
+
     this.channel = channel;
 
     setStatus(ChatProviderStatuses.Pending);
@@ -35,10 +37,17 @@ class GoodgameChatProvider extends ChatProvider {
 
   public override function onConnect(_) {
 
+    var intChannel:Int = Std.parseInt(channel);
+    var ch: Dynamic = intChannel;
+    if (channel != '$intChannel') {
+      ch = channel;
+    }
+
+
     var connectionMessage:Dynamic = {
       type: "join",
       data: {
-        channel_id: Std.parseInt(channel), // идентификатор канала
+        channel_id: ch, // идентификатор канала
         hidden: false   // для модераторов: не показывать ник в списке юзеров
       }
     };
@@ -50,7 +59,6 @@ class GoodgameChatProvider extends ChatProvider {
 
   public override function disconnect() {
     tryReconnect = false;
-    channel = null;
     socket.close();
     socket = null;
     setStatus(ChatProviderStatuses.Disconnected);

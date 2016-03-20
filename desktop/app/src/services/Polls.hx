@@ -78,7 +78,6 @@ class Polls extends Service {
     });
 
     app.ui.when('polls.set', function (config) {
-      trace('Polls.set', config);
       this.setConfig(config);
       return this.getConfig();
     });
@@ -89,9 +88,6 @@ class Polls extends Service {
       if (config.status != Running) return;
 
       var username = '[${message.source}] ${message.username}';
-
-      trace('$username: ${message.text}');
-
 
       if (config.votes1.indexOf(username) != -1 || config.votes2.indexOf(username) != -1) {
         return;
@@ -115,7 +111,6 @@ class Polls extends Service {
           config: config
         }));
         app.ui.notify('polls.vote', { key: key, user: username, source: message.source });
-        trace(config);
       }
     });
 
@@ -132,7 +127,6 @@ class Polls extends Service {
   }
 
   function broadcast(action: String) {
-    trace('broadcast', action);
     app.socketServer.broadcast(haxe.Json.stringify({
       action: action,
       key: null,
