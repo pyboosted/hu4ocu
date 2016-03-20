@@ -73,6 +73,8 @@ typedef PollsConfig = {
 
 typedef WheelConfig = {
   status: WheelStatuses,
+  visual: PollsVisuals,
+  keyword: String,
   list: Array<String>,
   winner: Int
 };

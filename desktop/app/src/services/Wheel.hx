@@ -1,22 +1,8 @@
 package services;
 
+import Formats;
+
 using StringTools;
-
-@:enum abstract WheelStatus(String) {
-  var NotRunning = 'not_running';
-  var Speeding = 'speeding';
-  var Running = 'running';
-  var Slowing = 'slowing';
-  var Stopped = 'stopped';
-}
-
-typedef WheelConfig = {
-  status: WheelStatus,
-  list: Array<String>,
-  keyword: String,
-  winner: Int
-};
-
 
 class Wheel extends Service {
 
@@ -50,6 +36,7 @@ class Wheel extends Service {
       action: action,
       config: config
     }));
+    app.ui.notify(action, config);
   }
 
   public function new(app) {
@@ -57,6 +44,7 @@ class Wheel extends Service {
 
     config = {
       status: NotRunning,
+      visual: Hidden,
       list: [],
       keyword: null,
       winner: null
@@ -77,7 +65,6 @@ class Wheel extends Service {
     });
 
     app.ui.when('wheel.get', function (_) {
-      trace('wheel.get');
       return config;
     });
 
@@ -130,6 +117,19 @@ class Wheel extends Service {
       }, 11000);
       return config;
     });
+
+    app.ui.when('wheel.show', function (_) {
+      config.visual = Visible;
+      broadcast('wheel.show');
+      return config;
+    });
+
+    app.ui.when('wheel.hide', function (_) {
+      config.visual = Hidden;
+      broadcast('wheel.hide');
+      return config;
+    });
+
 
     app.socketServer.on('connection', function (client) {
       client.send(haxe.Json.stringify({

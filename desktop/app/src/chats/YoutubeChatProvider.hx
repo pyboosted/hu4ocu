@@ -5,9 +5,16 @@ import chats.ChatProvider;
 
 import Formats;
 
+using StringTools;
+
 @:jsRequire('child_process')
 extern class ChildProcess {
   public static function spawn(processName: String, args: Array<String>):Dynamic;
+}
+
+@:jsRequire('os')
+extern class OS {
+  public static function platform():String;
 }
 
 class YoutubeChatProvider extends ChatProvider {
@@ -30,7 +37,12 @@ class YoutubeChatProvider extends ChatProvider {
 
     setStatus(ChatProviderStatuses.Pending);
 
-    phantom = ChildProcess.spawn('./node_modules/.bin/phantomjs', ['./bin/utils/yt-parser.js', channel]);
+    var isWindows = (OS.platform().startsWith('win'));
+    
+    var phantomPath = isWindows ? 'phantomjs.exe' : './node_modules/.bin/phantomjs';
+    var ytParserPath = isWindows ? 'resources/app/bin/utils/yt-parser.js' : './bin/utils/yt-parser.js';
+
+    phantom = ChildProcess.spawn(phantomPath, [ytParserPath, channel]);
     phantom.stdout.on('data', function (data) {
       if (firstTick) {
         this.onConnect(null);

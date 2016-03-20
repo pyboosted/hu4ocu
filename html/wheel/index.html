@@ -35,7 +35,12 @@
       left: calc(50% - 273px);
       top: calc(50% - 532px);
       height: 1065px;
+
       /*transition: transform 0.2s linear;*/
+    }
+
+    #userlist {
+      display: none;
     }
 
     .user { opacity: 0; }
@@ -228,6 +233,14 @@
         requestAnimationFrame(this._step.bind(this));
       };
 
+      Wheel.prototype.show = function () {
+        this.listEl.style.display = 'block';
+      };
+
+      Wheel.prototype.hide = function () {
+        this.listEl.style.display = 'none';
+      };
+
       Wheel.prototype.reset = function () {
         // for (var i = 0; i < this.stepsToReset; i++) {
         //   this.listEl.appendChild(this.listEl.children[0]);
@@ -329,10 +342,15 @@
           var message = JSON.parse(data.data);
           if (message.action.indexOf('wheel.') !== 0) return;
           if (message.action == 'wheel.init' || message.action == 'wheel.update') {
+            
             if (message.config.list.length > 0) {
               wheelConfig.users = message.config.list;
               wheel = new Wheel(wheelConfig);
+              if (message.config.visual == 'visible') {
+                wheel.show();
+              }
             }
+
           }
           if (message.action == 'wheel.start') {
             if (wheel != null) {
@@ -342,6 +360,16 @@
           if (message.action == 'wheel.stop') {
             if (wheel != null) {
               wheel.stopAt(message.config.winner);
+            }
+          }
+          if (message.action == 'wheel.show') {
+            if (wheel != null) {
+              wheel.show();
+            }
+          }
+          if (message.action == 'wheel.hide') {
+            if (wheel != null) {
+              wheel.hide();
             }
           }
         };

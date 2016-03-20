@@ -55,13 +55,20 @@ class UI {
 
   public function when(event: String, fn:Dynamic->Dynamic) {
     IPC.on(event, function (event, args) {
-      event.returnValue = fn(args);
-      if (args != null && args.counter != null) {
-        var res:Dynamic = event.returnValue;
-        if (res == null) res = {};
-        res.counter = args.counter;
+
+      var data = args;
+      if (data != null && data.counter != null) {
+        var result = fn(data.data);
+        event.returnValue = result;
+        var res = {
+          counter: data.counter,
+          data: result
+        };
         notify('response', res);
+      } else {
+        event.returnValue = fn(data);
       }
+      
     });
   }
 

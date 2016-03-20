@@ -8,7 +8,7 @@ class API {
 
     API.on('response', function (data) {
       if (data.counter != null && listeners.exists(data.counter)) {
-        listeners.get(data.counter)(null, data);
+        listeners.get(data.counter)(null, data.data);
         listeners.remove(data.counter);
       }
     });
@@ -23,9 +23,13 @@ class API {
 
   public static function async(key: String, params: Dynamic, fn: Dynamic->Dynamic->Void) {
     listeners.set(counter, fn);
-    if (params == null) params = {};
-    params.counter = counter;
-    API.get(key, params);
+    
+    var req = {
+      counter: counter,
+      data: params
+    };
+
+    API.get(key, req);
     counter++;
   }
 

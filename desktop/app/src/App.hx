@@ -7,6 +7,7 @@ import ws.Server as SocketServer;
 import chats.Chats;
 
 import services.Polls;
+import services.Wheel;
 
 class App {
 
@@ -18,6 +19,7 @@ class App {
 
   public var chats: Chats;
   public var polls: Polls;
+  public var wheel: Wheel;
 
   private function isWindows():Bool {
     return (untyped process.platform == 'win32');
@@ -38,6 +40,8 @@ class App {
     });
 
     polls = new Polls(this);
+
+    wheel = new Wheel(this);
 
   }
 

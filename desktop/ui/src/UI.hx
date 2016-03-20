@@ -18,6 +18,7 @@ import pages.About;
 
   public static var chats = new data.Chats();
   public static var polls = new data.Polls();
+  public static var wheel = new data.Wheel();
 
   static function run() {
 

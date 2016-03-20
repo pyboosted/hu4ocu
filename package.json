@@ -10,6 +10,7 @@
     "app": "./node_modules/.bin/electron ."
   },
   "devDependencies": {
-    "electron-prebuilt": "^0.37.2"
+    "electron-prebuilt": "^0.37.2",
+    "phantomjs-prebuilt": "^2.0.0r"
   }
 }
