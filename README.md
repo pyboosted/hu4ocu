@@ -4,6 +4,8 @@
 
 Hu4ocu is an application that helps you to add interactivity to yuor broadcasts. Using Hu4ocu you can make polls, organize a raffle.
 
+![Chats](docs/chats.png)
+
 Hu4ocu is built with [Electron](https://github.com/atom/electron)(ex. atom-shell), [Mithril](https://github.com/lhorie/mithril) and [Haxe](https://github.com/HaxeFoundation/haxe).
 
 ## Building from source
